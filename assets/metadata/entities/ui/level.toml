@@ -1,0 +1,11 @@
+[[entity]]
+
+    [entity.components.Text]
+    id = "level"
+    text = "LEVEL 1/1"
+    font_face = { font = "joystix", options = { size = 25.0, hinting = "Full" } }
+    color = [255, 255, 255, 255]
+
+    [entity.components.UITransform]
+    translation = { x = 10, y = 670 }
+    pivot = "TopLeft"
