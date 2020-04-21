@@ -44,6 +44,13 @@ func main() {
 	// Init screen dimensions
 	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: windowWidth, Height: windowHeight}
 
+	// Load controls
+	axes := []string{}
+	actions := []string{gr.PreviousLevelAction, gr.PreviousLevelFastAction, gr.NextLevelAction, gr.NextLevelFastAction}
+	controls, inputHandler := loader.LoadControls("config/controls.toml", axes, actions)
+	world.Resources.Controls = &controls
+	world.Resources.InputHandler = &inputHandler
+
 	// Load sprite sheets
 	spriteSheets := loader.LoadSpriteSheets("assets/metadata/spritesheets/spritesheets.toml")
 	world.Resources.SpriteSheets = &spriteSheets

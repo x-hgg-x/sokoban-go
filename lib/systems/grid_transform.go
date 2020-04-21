@@ -13,8 +13,8 @@ const (
 	transformOffsetY = -40
 )
 
-// SetTransformSystem sets transform for grid elements
-func SetTransformSystem(world w.World) {
+// GridTransformSystem sets transform for grid elements
+func GridTransformSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 
 	world.Manager.Join(gameComponents.GridElement, world.Components.Engine.SpriteRender, world.Components.Engine.Transform).Visit(ecs.Visit(func(entity ecs.Entity) {
@@ -25,7 +25,7 @@ func SetTransformSystem(world w.World) {
 		screenHeight := float64(world.Resources.ScreenDimensions.Height)
 		elementSprite := elementSpriteRender.SpriteSheet.Sprites[elementSpriteRender.SpriteNumber]
 
-		elementTranslation.X = float64(gridElement.PosX*elementSprite.Width) + float64(elementSprite.Width)/2 + transformOffsetX
-		elementTranslation.Y = screenHeight - float64(gridElement.PosY*elementSprite.Height) - float64(elementSprite.Height)/2 + transformOffsetY
+		elementTranslation.X = float64(gridElement.PosCol*elementSprite.Width) + float64(elementSprite.Width)/2 + transformOffsetX
+		elementTranslation.Y = screenHeight - float64(gridElement.PosLine*elementSprite.Height) - float64(elementSprite.Height)/2 + transformOffsetY
 	}))
 }

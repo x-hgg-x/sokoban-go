@@ -3,14 +3,16 @@ package loader
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
+	"regexp"
 	"strings"
 
 	gc "github.com/x-hgg-x/sokoban-go/lib/components"
 	"github.com/x-hgg-x/sokoban-go/lib/resources"
 
-	ecs "github.com/x-hgg-x/goecs/v2"
 	ec "github.com/x-hgg-x/goecsengine/components"
+	"github.com/x-hgg-x/goecsengine/loader"
 	"github.com/x-hgg-x/goecsengine/math"
 	"github.com/x-hgg-x/goecsengine/utils"
 	w "github.com/x-hgg-x/goecsengine/world"
@@ -35,8 +37,13 @@ const (
 	charPlayerOnGoal = '+'
 )
 
+var regexpValidChars = regexp.MustCompile(`^[ \-_#\.\$@\*\+]+$`)
+
 // LoadPackage loads level package from a text file
-func LoadPackage(packagePath string, world w.World) []ecs.Entity {
+func LoadPackage(packagePath string, world w.World) {
+	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
+
+	// Load file
 	file, err := os.Open(packagePath)
 	utils.LogError(err)
 	defer file.Close()
@@ -48,16 +55,37 @@ func LoadPackage(packagePath string, world w.World) []ecs.Entity {
 		lines = append(lines, line)
 	}
 	utils.LogError(scanner.Err())
+	lines = append(lines, "")
 
-	entities, err := LoadLevel(world, lines)
-	utils.LogError(err)
-	return entities
+	// Split levels
+	levels := [][]string{}
+	currentLevel := []string{}
+	for _, line := range lines {
+		if len(strings.TrimSpace(line)) > 0 && regexpValidChars.MatchString(line) {
+			currentLevel = append(currentLevel, line)
+		} else if len(currentLevel) > 0 {
+			levels = append(levels, currentLevel)
+			currentLevel = []string{}
+		}
+	}
+
+	// Preload levels
+	prefabs.Game.Levels = []loader.EntityComponentList{}
+	for iLevel, level := range levels {
+		if componentList, err := PreloadLevel(world, level); err == nil {
+			prefabs.Game.Levels = append(prefabs.Game.Levels, *componentList)
+		} else {
+			log.Printf("error when loading level %d: %s", iLevel+1, err.Error())
+		}
+	}
+
+	if len(prefabs.Game.Levels) == 0 {
+		utils.LogError(fmt.Errorf("invalid package: no valid levels in package"))
+	}
 }
 
-// LoadLevel loads a level from text lines
-func LoadLevel(world w.World, lines []string) ([]ecs.Entity, error) {
-	entities := []ecs.Entity{}
-
+// PreloadLevel preloads a level from text lines
+func PreloadLevel(world w.World, lines []string) (*loader.EntityComponentList, error) {
 	gridWidth := 0
 	gridHeight := len(lines)
 	playerCount, boxCount, goalCount := 0, 0, 0
@@ -69,50 +97,52 @@ func LoadLevel(world w.World, lines []string) ([]ecs.Entity, error) {
 	}
 
 	if gridWidth > maxWidth || gridHeight > maxHeight {
-		return []ecs.Entity{}, fmt.Errorf("level size must be less than 30x20")
+		return nil, fmt.Errorf("level size must be less than 30x20")
 	}
 	if boxCount != goalCount {
-		return []ecs.Entity{}, fmt.Errorf("invalid level: box count and goal count must be the same")
+		return nil, fmt.Errorf("invalid level: box count and goal count must be the same")
 	}
 	if boxCount == 0 {
-		return []ecs.Entity{}, fmt.Errorf("invalid level: no box")
+		return nil, fmt.Errorf("invalid level: no box")
 	}
 	if playerCount != 1 {
-		return []ecs.Entity{}, fmt.Errorf("invalid level: level must have one player")
+		return nil, fmt.Errorf("invalid level: level must have one player")
 	}
 
 	lines = normalizeLevel(lines, gridWidth, gridHeight)
+
+	componentList := &loader.EntityComponentList{}
+	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
 
 	for iLine := range lines {
 		for iChar, char := range lines[iLine] {
 			switch char {
 			case charFloor:
-				entities = append(entities, createFloorEntity(world, iChar, iLine))
+				createFloorEntity(componentList, &gameSpriteSheet, iLine, iChar)
 			case charExterior:
-				entities = append(entities, createExteriorEntity(world, iChar, iLine))
+				createExteriorEntity(componentList, &gameSpriteSheet, iLine, iChar)
 			case charWall:
-				entities = append(entities, createWallEntity(world, iChar, iLine))
+				createWallEntity(componentList, &gameSpriteSheet, iLine, iChar)
 			case charGoal:
-				entities = append(entities, createGoalEntity(world, iChar, iLine))
+				createGoalEntity(componentList, &gameSpriteSheet, iLine, iChar)
 			case charBox:
-				entities = append(entities, createFloorEntity(world, iChar, iLine))
-				entities = append(entities, createBoxEntity(world, iChar, iLine))
+				createFloorEntity(componentList, &gameSpriteSheet, iLine, iChar)
+				createBoxEntity(componentList, &gameSpriteSheet, iLine, iChar)
 			case charPlayer:
-				entities = append(entities, createFloorEntity(world, iChar, iLine))
-				entities = append(entities, createPlayerEntity(world, iChar, iLine))
+				createFloorEntity(componentList, &gameSpriteSheet, iLine, iChar)
+				createPlayerEntity(componentList, &gameSpriteSheet, iLine, iChar)
 			case charBoxOnGoal:
-				entities = append(entities, createGoalEntity(world, iChar, iLine))
-				entities = append(entities, createBoxEntity(world, iChar, iLine))
+				createGoalEntity(componentList, &gameSpriteSheet, iLine, iChar)
+				createBoxEntity(componentList, &gameSpriteSheet, iLine, iChar)
 			case charPlayerOnGoal:
-				entities = append(entities, createGoalEntity(world, iChar, iLine))
-				entities = append(entities, createPlayerEntity(world, iChar, iLine))
+				createGoalEntity(componentList, &gameSpriteSheet, iLine, iChar)
+				createPlayerEntity(componentList, &gameSpriteSheet, iLine, iChar)
 			default:
-				world.Manager.DeleteEntities(entities...)
-				return []ecs.Entity{}, fmt.Errorf("invalid level: invalid char '%s'", string(char))
+				return nil, fmt.Errorf("invalid level: invalid char '%s'", string(char))
 			}
 		}
 	}
-	return entities, nil
+	return componentList, nil
 }
 
 func normalizeLevel(lines []string, gridWidth, gridHeight int) []string {
@@ -200,62 +230,66 @@ func fillExterior(grid [][]rune, posLine, posCol, gridWidth, gridHeight int) {
 	}
 }
 
-func createFloorEntity(world w.World, posX, posY int) ecs.Entity {
-	gameComponents := world.Components.Game.(*gc.Components)
-	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-
-	return world.Manager.NewEntity().
-		AddComponent(world.Components.Engine.SpriteRender, &ec.SpriteRender{SpriteSheet: &gameSpriteSheet, SpriteNumber: resources.FloorSpriteNumber}).
-		AddComponent(world.Components.Engine.Transform, &ec.Transform{}).
-		AddComponent(gameComponents.GridElement, &gc.GridElement{PosX: posX, PosY: posY})
+func createFloorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.FloorSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+	})
 }
 
-func createExteriorEntity(world w.World, posX, posY int) ecs.Entity {
-	gameComponents := world.Components.Game.(*gc.Components)
-	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-
-	return world.Manager.NewEntity().
-		AddComponent(world.Components.Engine.SpriteRender, &ec.SpriteRender{SpriteSheet: &gameSpriteSheet, SpriteNumber: resources.ExteriorSpriteNumber}).
-		AddComponent(world.Components.Engine.Transform, &ec.Transform{}).
-		AddComponent(gameComponents.GridElement, &gc.GridElement{PosX: posX, PosY: posY})
+func createExteriorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.ExteriorSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+	})
 }
 
-func createWallEntity(world w.World, posX, posY int) ecs.Entity {
-	gameComponents := world.Components.Game.(*gc.Components)
-	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-
-	return world.Manager.NewEntity().
-		AddComponent(world.Components.Engine.SpriteRender, &ec.SpriteRender{SpriteSheet: &gameSpriteSheet, SpriteNumber: resources.WallSpriteNumber}).
-		AddComponent(world.Components.Engine.Transform, &ec.Transform{}).
-		AddComponent(gameComponents.GridElement, &gc.GridElement{PosX: posX, PosY: posY})
+func createWallEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.WallSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		Wall:        &gc.Wall{},
+		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+	})
 }
 
-func createGoalEntity(world w.World, posX, posY int) ecs.Entity {
-	gameComponents := world.Components.Game.(*gc.Components)
-	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-
-	return world.Manager.NewEntity().
-		AddComponent(world.Components.Engine.SpriteRender, &ec.SpriteRender{SpriteSheet: &gameSpriteSheet, SpriteNumber: resources.GoalSpriteNumber}).
-		AddComponent(world.Components.Engine.Transform, &ec.Transform{}).
-		AddComponent(gameComponents.GridElement, &gc.GridElement{PosX: posX, PosY: posY})
+func createGoalEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.GoalSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		Goal:        &gc.Goal{},
+		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+	})
 }
 
-func createBoxEntity(world w.World, posX, posY int) ecs.Entity {
-	gameComponents := world.Components.Game.(*gc.Components)
-	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-
-	return world.Manager.NewEntity().
-		AddComponent(world.Components.Engine.SpriteRender, &ec.SpriteRender{SpriteSheet: &gameSpriteSheet, SpriteNumber: resources.BoxSpriteNumber}).
-		AddComponent(world.Components.Engine.Transform, &ec.Transform{Depth: 1}).
-		AddComponent(gameComponents.GridElement, &gc.GridElement{PosX: posX, PosY: posY})
+func createBoxEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.BoxSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		Box:         &gc.Box{},
+		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+	})
 }
 
-func createPlayerEntity(world w.World, posX, posY int) ecs.Entity {
-	gameComponents := world.Components.Game.(*gc.Components)
-	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-
-	return world.Manager.NewEntity().
-		AddComponent(world.Components.Engine.SpriteRender, &ec.SpriteRender{SpriteSheet: &gameSpriteSheet, SpriteNumber: resources.PlayerSpriteNumber}).
-		AddComponent(world.Components.Engine.Transform, &ec.Transform{Depth: 1}).
-		AddComponent(gameComponents.GridElement, &gc.GridElement{PosX: posX, PosY: posY})
+func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
+		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.PlayerSpriteNumber},
+		Transform:    &ec.Transform{},
+	})
+	componentList.Game = append(componentList.Game, gameComponentList{
+		Player:      &gc.Player{},
+		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+	})
 }
