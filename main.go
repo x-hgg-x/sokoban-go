@@ -46,7 +46,11 @@ func main() {
 
 	// Load controls
 	axes := []string{}
-	actions := []string{gr.PreviousLevelAction, gr.PreviousLevelFastAction, gr.NextLevelAction, gr.NextLevelFastAction}
+	actions := []string{
+		gr.MoveUpAction, gr.MoveDownAction, gr.MoveLeftAction, gr.MoveRightAction,
+		gr.MoveUpFastAction, gr.MoveDownFastAction, gr.MoveLeftFastAction, gr.MoveRightFastAction,
+		gr.PreviousLevelAction, gr.PreviousLevelFastAction, gr.NextLevelAction, gr.NextLevelFastAction,
+	}
 	controls, inputHandler := loader.LoadControls("config/controls.toml", axes, actions)
 	world.Resources.Controls = &controls
 	world.Resources.InputHandler = &inputHandler

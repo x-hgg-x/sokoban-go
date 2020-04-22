@@ -1,3 +1,31 @@
+[controls.actions.MoveUp]
+combinations = [[{ key = "Up" }]]
+once = true
+
+[controls.actions.MoveUpFast]
+combinations = [[{ key = "Shift" }, { key = "Up" }]]
+
+[controls.actions.MoveDown]
+combinations = [[{ key = "Down" }]]
+once = true
+
+[controls.actions.MoveDownFast]
+combinations = [[{ key = "Shift" }, { key = "Down" }]]
+
+[controls.actions.MoveLeft]
+combinations = [[{ key = "Left" }]]
+once = true
+
+[controls.actions.MoveLeftFast]
+combinations = [[{ key = "Shift" }, { key = "Left" }]]
+
+[controls.actions.MoveRight]
+combinations = [[{ key = "Right" }]]
+once = true
+
+[controls.actions.MoveRightFast]
+combinations = [[{ key = "Shift" }, { key = "Right" }]]
+
 [controls.actions.PreviousLevel]
 combinations = [[{ key = "Z" }]]
 once = true

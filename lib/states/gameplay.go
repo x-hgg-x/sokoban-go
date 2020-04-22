@@ -39,6 +39,7 @@ func (st *GameplayState) OnStop(world w.World) {
 // Update method
 func (st *GameplayState) Update(world w.World, screen *ebiten.Image) states.Transition {
 	g.SwitchLevelSystem(world)
+	g.MoveSystem(world)
 	g.TextInfoSystem(world)
 	g.GridTransformSystem(world)
 

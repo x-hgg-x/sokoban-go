@@ -18,12 +18,20 @@ const (
 	MaxHeight = 20
 )
 
+// Tile contains tile entities
+type Tile struct {
+	Player *ecs.Entity
+	Box    *ecs.Entity
+	Goal   *ecs.Entity
+	Wall   *ecs.Entity
+}
+
 // Game contains game resources
 type Game struct {
 	CurrentLevel int
 	LevelCount   int
 	Steps        int
-	Grid         [MaxHeight][MaxWidth][]ecs.Entity
+	Grid         [MaxHeight][MaxWidth]Tile
 }
 
 // InitLevel inits level
@@ -41,9 +49,21 @@ func InitLevel(world w.World, levelNum int) {
 	game := &Game{CurrentLevel: levelNum, LevelCount: len(prefabs.Game.Levels)}
 
 	// Set grid
-	world.Manager.Join(gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
+	world.Manager.Join(gameComponents.Player, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		game.Grid[gridElement.Line][gridElement.Col] = append(game.Grid[gridElement.Line][gridElement.Col], entity)
+		game.Grid[gridElement.Line][gridElement.Col].Player = &entity
+	}))
+	world.Manager.Join(gameComponents.Box, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+		game.Grid[gridElement.Line][gridElement.Col].Box = &entity
+	}))
+	world.Manager.Join(gameComponents.Goal, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+		game.Grid[gridElement.Line][gridElement.Col].Goal = &entity
+	}))
+	world.Manager.Join(gameComponents.Wall, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+		game.Grid[gridElement.Line][gridElement.Col].Wall = &entity
 	}))
 
 	// Set level info text

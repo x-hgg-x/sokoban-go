@@ -270,7 +270,7 @@ func createGoalEntity(componentList *loader.EntityComponentList, gameSpriteSheet
 func createBoxEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
 		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.BoxSpriteNumber},
-		Transform:    &ec.Transform{},
+		Transform:    &ec.Transform{Depth: 1},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
 		Box:         &gc.Box{},
@@ -281,7 +281,7 @@ func createBoxEntity(componentList *loader.EntityComponentList, gameSpriteSheet 
 func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
 		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.PlayerSpriteNumber},
-		Transform:    &ec.Transform{},
+		Transform:    &ec.Transform{Depth: 1},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
 		Player:      &gc.Player{},
