@@ -25,7 +25,7 @@ func GridTransformSystem(world w.World) {
 		screenHeight := float64(world.Resources.ScreenDimensions.Height)
 		elementSprite := elementSpriteRender.SpriteSheet.Sprites[elementSpriteRender.SpriteNumber]
 
-		elementTranslation.X = float64(gridElement.PosCol*elementSprite.Width) + float64(elementSprite.Width)/2 + transformOffsetX
-		elementTranslation.Y = screenHeight - float64(gridElement.PosLine*elementSprite.Height) - float64(elementSprite.Height)/2 + transformOffsetY
+		elementTranslation.X = float64(gridElement.Col*elementSprite.Width) + float64(elementSprite.Width)/2 + transformOffsetX
+		elementTranslation.Y = screenHeight - float64(gridElement.Line*elementSprite.Height) - float64(elementSprite.Height)/2 + transformOffsetY
 	}))
 }

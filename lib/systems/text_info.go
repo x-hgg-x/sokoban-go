@@ -22,9 +22,12 @@ func TextInfoSystem(world w.World) {
 	boxOnGoalCount := 0
 
 	boxSet.Visit(ecs.Visit(func(entity ecs.Entity) {
-		boxGrid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		if _, ok := gameResources.Goals[*boxGrid]; ok {
-			boxOnGoalCount++
+		boxGridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+		for _, entity := range gameResources.Grid[boxGridElement.Line][boxGridElement.Col] {
+			if entity.HasComponent(gameComponents.Goal) {
+				boxOnGoalCount++
+				break
+			}
 		}
 	}))
 

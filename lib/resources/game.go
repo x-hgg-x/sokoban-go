@@ -11,16 +11,25 @@ import (
 	w "github.com/x-hgg-x/goecsengine/world"
 )
 
+const (
+	// MaxWidth is the maximum level width
+	MaxWidth = 30
+	// MaxHeight is the maximum level height
+	MaxHeight = 20
+)
+
 // Game contains game resources
 type Game struct {
 	CurrentLevel int
 	LevelCount   int
 	Steps        int
-	Goals        map[gc.GridElement]struct{}
+	Grid         [MaxHeight][MaxWidth][]ecs.Entity
 }
 
 // InitLevel inits level
 func InitLevel(world w.World, levelNum int) {
+	gameComponents := world.Components.Game.(*gc.Components)
+
 	// Load ui entities
 	prefabs := world.Resources.Prefabs.(*Prefabs)
 	loader.AddEntities(world, prefabs.Game.BoxInfo)
@@ -29,17 +38,12 @@ func InitLevel(world w.World, levelNum int) {
 
 	// Load level
 	loader.AddEntities(world, prefabs.Game.Levels[levelNum])
-	game := &Game{
-		CurrentLevel: levelNum,
-		LevelCount:   len(prefabs.Game.Levels),
-		Goals:        make(map[gc.GridElement]struct{}),
-	}
+	game := &Game{CurrentLevel: levelNum, LevelCount: len(prefabs.Game.Levels)}
 
-	// Set grid position of goals
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Goal, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
-		goalGrid := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		game.Goals[*goalGrid] = struct{}{}
+	// Set grid
+	world.Manager.Join(gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
+		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
+		game.Grid[gridElement.Line][gridElement.Col] = append(game.Grid[gridElement.Line][gridElement.Col], entity)
 	}))
 
 	// Set level info text

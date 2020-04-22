@@ -19,11 +19,6 @@ import (
 )
 
 const (
-	maxWidth  = 30
-	maxHeight = 20
-)
-
-const (
 	charFloor1       = ' '
 	charFloor2       = '-'
 	charFloor3       = '_'
@@ -96,7 +91,7 @@ func PreloadLevel(world w.World, lines []string) (*loader.EntityComponentList, e
 		goalCount += strings.Count(line, string(charGoal)) + strings.Count(line, string(charBoxOnGoal)) + strings.Count(line, string(charPlayerOnGoal))
 	}
 
-	if gridWidth > maxWidth || gridHeight > maxHeight {
+	if gridWidth > resources.MaxWidth || gridHeight > resources.MaxHeight {
 		return nil, fmt.Errorf("level size must be less than 30x20")
 	}
 	if boxCount != goalCount {
@@ -180,14 +175,14 @@ func normalizeLevel(lines []string, gridWidth, gridHeight int) []string {
 
 	// Center level to max width
 	for iLine := range lines {
-		padding := maxWidth - gridWidth
+		padding := resources.MaxWidth - gridWidth
 		lines[iLine] = strings.Repeat(string(charExterior), padding/2) + string(grid[iLine]) + strings.Repeat(string(charExterior), padding-padding/2)
 	}
 
 	// Center level to max height
-	padding := make([]string, maxHeight-gridHeight)
+	padding := make([]string, resources.MaxHeight-gridHeight)
 	for iPadding := range padding {
-		padding[iPadding] = strings.Repeat(string(charExterior), maxWidth)
+		padding[iPadding] = strings.Repeat(string(charExterior), resources.MaxWidth)
 	}
 	lines = append(padding[:len(padding)/2], lines...)
 	lines = append(lines, padding[len(padding)/2:]...)
@@ -195,12 +190,12 @@ func normalizeLevel(lines []string, gridWidth, gridHeight int) []string {
 	return lines
 }
 
-func fillExterior(grid [][]rune, posLine, posCol, gridWidth, gridHeight int) {
-	if grid[posLine][posCol] != charFloor {
+func fillExterior(grid [][]rune, line, col, gridWidth, gridHeight int) {
+	if grid[line][col] != charFloor {
 		return
 	}
 
-	fillQueue := &[]struct{ line, col int }{{posLine, posCol}}
+	fillQueue := &[]struct{ line, col int }{{line, col}}
 
 	for len(*fillQueue) > 0 {
 		elem := (*fillQueue)[0]
@@ -230,66 +225,66 @@ func fillExterior(grid [][]rune, posLine, posCol, gridWidth, gridHeight int) {
 	}
 }
 
-func createFloorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+func createFloorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
 		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.FloorSpriteNumber},
 		Transform:    &ec.Transform{},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
-		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
 
-func createExteriorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+func createExteriorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
 		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.ExteriorSpriteNumber},
 		Transform:    &ec.Transform{},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
-		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
 
-func createWallEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+func createWallEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
 		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.WallSpriteNumber},
 		Transform:    &ec.Transform{},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
 		Wall:        &gc.Wall{},
-		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
 
-func createGoalEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+func createGoalEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
 		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.GoalSpriteNumber},
 		Transform:    &ec.Transform{},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
 		Goal:        &gc.Goal{},
-		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
 
-func createBoxEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+func createBoxEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
 		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.BoxSpriteNumber},
 		Transform:    &ec.Transform{},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
 		Box:         &gc.Box{},
-		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }
 
-func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, posLine, posCol int) {
+func createPlayerEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {
 	componentList.Engine = append(componentList.Engine, loader.EngineComponentList{
 		SpriteRender: &ec.SpriteRender{SpriteSheet: gameSpriteSheet, SpriteNumber: resources.PlayerSpriteNumber},
 		Transform:    &ec.Transform{},
 	})
 	componentList.Game = append(componentList.Game, gameComponentList{
 		Player:      &gc.Player{},
-		GridElement: &gc.GridElement{PosLine: posLine, PosCol: posCol},
+		GridElement: &gc.GridElement{Line: line, Col: col},
 	})
 }

@@ -13,8 +13,8 @@ type Components struct {
 
 // GridElement component
 type GridElement struct {
-	PosLine int
-	PosCol  int
+	Line int
+	Col  int
 }
 
 // Player component
