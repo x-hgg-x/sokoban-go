@@ -30,4 +30,12 @@ const (
 	NextLevelAction = "NextLevel"
 	// NextLevelFastAction is the action for switching fast to the next level
 	NextLevelFastAction = "NextLevelFast"
+
+	// UndoAction is the action for undoing the last move
+	UndoAction = "Undo"
+	// UndoFastAction is the action for undoing the last move fast
+	UndoFastAction = "UndoFast"
+
+	// RestartAction is the action for restarting the level
+	RestartAction = "Restart"
 )

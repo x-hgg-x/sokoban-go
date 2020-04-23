@@ -80,11 +80,11 @@ func move(world w.World, movement resources.MovementType, playerLine, playerCol 
 		if twoFrontTile.Box != nil || twoFrontTile.Wall != nil {
 			return
 		}
-		twoFrontTile.Box = oneFrontTile.Box
-		oneFrontTile.Box = nil
 		boxGridElement := gameComponents.GridElement.Get(*box).(*gc.GridElement)
 		boxGridElement.Line = twoFrontLine
 		boxGridElement.Col = twoFrontCol
+		twoFrontTile.Box = oneFrontTile.Box
+		oneFrontTile.Box = nil
 		movement += 4
 	}
 

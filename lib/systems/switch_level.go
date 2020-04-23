@@ -14,15 +14,17 @@ func SwitchLevelSystem(world w.World) {
 	previousLevelFastAction := world.Resources.InputHandler.Actions[resources.PreviousLevelFastAction]
 	nextLevelAction := world.Resources.InputHandler.Actions[resources.NextLevelAction]
 	nextLevelFastAction := world.Resources.InputHandler.Actions[resources.NextLevelFastAction]
+	restartAction := world.Resources.InputHandler.Actions[resources.RestartAction]
 
-	newLevel := gameResources.CurrentLevel
-	if (previousLevelAction || previousLevelFastAction) && gameResources.CurrentLevel > 0 {
-		newLevel--
-	}
-	if (nextLevelAction || nextLevelFastAction) && gameResources.CurrentLevel < gameResources.LevelCount-1 {
-		newLevel++
-	}
-	if newLevel == gameResources.CurrentLevel {
+	var newLevel int
+	switch {
+	case (previousLevelAction || previousLevelFastAction) && gameResources.CurrentLevel > 0:
+		newLevel = gameResources.CurrentLevel - 1
+	case (nextLevelAction || nextLevelFastAction) && gameResources.CurrentLevel < gameResources.LevelCount-1:
+		newLevel = gameResources.CurrentLevel + 1
+	case restartAction:
+		newLevel = gameResources.CurrentLevel
+	default:
 		return
 	}
 
