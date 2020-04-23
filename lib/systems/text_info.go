@@ -39,7 +39,7 @@ func TextInfoSystem(world w.World) {
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
 		if text.ID == "step" {
-			text.Text = fmt.Sprintf("STEPS: %d", gameResources.Steps)
+			text.Text = fmt.Sprintf("STEPS: %d", len(gameResources.Movements))
 		}
 	}))
 }

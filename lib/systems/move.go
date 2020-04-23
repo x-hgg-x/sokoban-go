@@ -27,31 +27,29 @@ func MoveSystem(world w.World) {
 		return
 	}
 	playerGridElement := gameComponents.GridElement.Get(ecs.Entity(*firstPlayer)).(*gc.GridElement)
-	playerLine := &playerGridElement.Line
-	playerCol := &playerGridElement.Col
 
 	// Move up
 	if moveUpAction || moveUpFastAction {
-		move(world, playerLine, playerCol, -1, 0)
+		move(world, resources.MovementUp, &playerGridElement.Line, &playerGridElement.Col, -1, 0)
 	}
 
 	// Move down
 	if moveDownAction || moveDownFastAction {
-		move(world, playerLine, playerCol, 1, 0)
+		move(world, resources.MovementDown, &playerGridElement.Line, &playerGridElement.Col, 1, 0)
 	}
 
 	// Move left
 	if moveLeftAction || moveLeftFastAction {
-		move(world, playerLine, playerCol, 0, -1)
+		move(world, resources.MovementLeft, &playerGridElement.Line, &playerGridElement.Col, 0, -1)
 	}
 
 	// Move right
 	if moveRightAction || moveRightFastAction {
-		move(world, playerLine, playerCol, 0, 1)
+		move(world, resources.MovementRight, &playerGridElement.Line, &playerGridElement.Col, 0, 1)
 	}
 }
 
-func move(world w.World, playerLine, playerCol *int, directionLine, directionCol int) {
+func move(world w.World, movement resources.MovementType, playerLine, playerCol *int, directionLine, directionCol int) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*resources.Game)
 
@@ -87,6 +85,7 @@ func move(world w.World, playerLine, playerCol *int, directionLine, directionCol
 		boxGridElement := gameComponents.GridElement.Get(*box).(*gc.GridElement)
 		boxGridElement.Line = twoFrontLine
 		boxGridElement.Col = twoFrontCol
+		movement += 4
 	}
 
 	playerTile := &gameResources.Grid[*playerLine][*playerCol]
@@ -95,5 +94,5 @@ func move(world w.World, playerLine, playerCol *int, directionLine, directionCol
 	*playerLine = oneFrontLine
 	*playerCol = oneFrontCol
 
-	gameResources.Steps++
+	gameResources.Movements = append(gameResources.Movements, movement)
 }

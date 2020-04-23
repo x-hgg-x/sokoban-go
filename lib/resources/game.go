@@ -18,6 +18,22 @@ const (
 	MaxHeight = 20
 )
 
+// MovementType is a movement type
+type MovementType int
+
+// List of movements
+const (
+	MovementUp MovementType = iota
+	MovementDown
+	MovementLeft
+	MovementRight
+
+	MovementUpPush    = MovementUp + 4
+	MovementDownPush  = MovementDown + 4
+	MovementLeftPush  = MovementLeft + 4
+	MovementRightPush = MovementRight + 4
+)
+
 // Tile contains tile entities
 type Tile struct {
 	Player *ecs.Entity
@@ -30,8 +46,8 @@ type Tile struct {
 type Game struct {
 	CurrentLevel int
 	LevelCount   int
-	Steps        int
 	Grid         [MaxHeight][MaxWidth]Tile
+	Movements    []MovementType
 }
 
 // InitLevel inits level
