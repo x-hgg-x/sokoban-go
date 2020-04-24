@@ -41,11 +41,19 @@ func (st *GameplayState) Update(world w.World, screen *ebiten.Image) states.Tran
 	g.SwitchLevelSystem(world)
 	g.UndoSystem(world)
 	g.MoveSystem(world)
-	g.TextInfoSystem(world)
+	g.InfoSystem(world)
 	g.GridTransformSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransQuit}
 	}
+
+	gameResources := world.Resources.Game.(*resources.Game)
+	switch gameResources.StateEvent {
+	case resources.StateEventLevelComplete:
+		gameResources.StateEvent = resources.StateEventNone
+		return states.Transition{Type: states.TransPush, NewStates: []states.State{&LevelCompleteState{}}}
+	}
+
 	return states.Transition{}
 }

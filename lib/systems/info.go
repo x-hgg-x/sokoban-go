@@ -11,8 +11,8 @@ import (
 	w "github.com/x-hgg-x/goecsengine/world"
 )
 
-// TextInfoSystem sets text info
-func TextInfoSystem(world w.World) {
+// InfoSystem sets game info
+func InfoSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*resources.Game)
 
@@ -42,4 +42,9 @@ func TextInfoSystem(world w.World) {
 			text.Text = fmt.Sprintf("STEPS: %d", len(gameResources.Movements))
 		}
 	}))
+
+	// Finish level if all boxes are on goals
+	if boxOnGoalCount == boxCount {
+		gameResources.StateEvent = resources.StateEventLevelComplete
+	}
 }

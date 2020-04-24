@@ -3,7 +3,9 @@ package resources
 import "github.com/x-hgg-x/goecsengine/loader"
 
 // MenuPrefabs contains menu prefabs
-type MenuPrefabs struct{}
+type MenuPrefabs struct {
+	LevelCompleteMenu loader.EntityComponentList
+}
 
 // GamePrefabs contains game prefabs
 type GamePrefabs struct {

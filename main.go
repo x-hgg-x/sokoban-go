@@ -66,6 +66,9 @@ func main() {
 
 	// Load prefabs
 	world.Resources.Prefabs = &gr.Prefabs{
+		Menu: gr.MenuPrefabs{
+			LevelCompleteMenu: loader.EntityComponentList{Engine: loader.LoadEngineComponents("assets/metadata/entities/ui/level_complete_menu.toml", world)},
+		},
 		Game: gr.GamePrefabs{
 			LevelInfo: loader.EntityComponentList{Engine: loader.LoadEngineComponents("assets/metadata/entities/ui/level.toml", world)},
 			BoxInfo:   loader.EntityComponentList{Engine: loader.LoadEngineComponents("assets/metadata/entities/ui/box.toml", world)},

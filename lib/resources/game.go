@@ -18,6 +18,15 @@ const (
 	MaxHeight = 20
 )
 
+// StateEvent is an event for game progression
+type StateEvent int
+
+// List of game progression events
+const (
+	StateEventNone StateEvent = iota
+	StateEventLevelComplete
+)
+
 // MovementType is a movement type
 type MovementType int
 
@@ -44,6 +53,7 @@ type Tile struct {
 
 // Game contains game resources
 type Game struct {
+	StateEvent   StateEvent
 	CurrentLevel int
 	LevelCount   int
 	Grid         [MaxHeight][MaxWidth]Tile
