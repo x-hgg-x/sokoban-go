@@ -13,7 +13,7 @@
     [entity.components.Text]
     id = "level_complete"
     text = "LEVEL COMPLETE"
-    font_face = { font = "joystix", options = { size = 60.0, hinting = "Full" } }
+    font_face = { font = "joystix", options.size = 60.0 }
     color = [255, 255, 255, 255]
 
     [entity.components.UITransform]
