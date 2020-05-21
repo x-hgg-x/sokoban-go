@@ -38,4 +38,7 @@ const (
 
 	// RestartAction is the action for restarting the level
 	RestartAction = "Restart"
+
+	// SaveAction is the action for saving the level
+	SaveAction = "Save"
 )

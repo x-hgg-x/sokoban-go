@@ -37,11 +37,34 @@ const (
 	MovementLeft
 	MovementRight
 
-	MovementUpPush    = MovementUp + 4
-	MovementDownPush  = MovementDown + 4
-	MovementLeftPush  = MovementLeft + 4
-	MovementRightPush = MovementRight + 4
+	MovementUpPush
+	MovementDownPush
+	MovementLeftPush
+	MovementRightPush
 )
+
+// GetSimpleMovement returns simple movement
+func GetSimpleMovement(m MovementType) MovementType {
+	return m % 4
+}
+
+// GetPushMovement returns push movement
+func GetPushMovement(m MovementType) MovementType {
+	return m%4 + 4
+}
+
+var movementChars = []rune("udlrUDLR")
+
+var movementCharMap = map[rune]MovementType{
+	'u': MovementUp,
+	'd': MovementDown,
+	'l': MovementLeft,
+	'r': MovementRight,
+	'U': MovementUpPush,
+	'D': MovementDownPush,
+	'L': MovementLeftPush,
+	'R': MovementRightPush,
+}
 
 // Tile contains tile entities
 type Tile struct {
@@ -51,18 +74,32 @@ type Tile struct {
 	Wall   *ecs.Entity
 }
 
+// Level is a game level
+type Level struct {
+	CurrentNum int
+	Grid       [MaxHeight][MaxWidth]Tile
+	Movements  []MovementType
+	Modified   bool
+}
+
 // Game contains game resources
 type Game struct {
-	StateEvent   StateEvent
-	CurrentLevel int
-	LevelCount   int
-	Grid         [MaxHeight][MaxWidth]Tile
-	Movements    []MovementType
+	StateEvent  StateEvent
+	PackageName string
+	LevelCount  int
+	Level       Level
+}
+
+// NewGame creates a new game
+func NewGame(world w.World, packageName string) *Game {
+	prefabs := world.Resources.Prefabs.(*Prefabs)
+	return &Game{PackageName: packageName, LevelCount: len(prefabs.Game.Levels)}
 }
 
 // InitLevel inits level
 func InitLevel(world w.World, levelNum int) {
 	gameComponents := world.Components.Game.(*gc.Components)
+	gameResources := world.Resources.Game.(*Game)
 
 	// Load ui entities
 	prefabs := world.Resources.Prefabs.(*Prefabs)
@@ -72,30 +109,30 @@ func InitLevel(world w.World, levelNum int) {
 
 	// Load level
 	loader.AddEntities(world, prefabs.Game.Levels[levelNum])
-	game := &Game{CurrentLevel: levelNum, LevelCount: len(prefabs.Game.Levels)}
+	gameResources.Level = Level{CurrentNum: levelNum}
 
 	// Set grid
 	world.Manager.Join(gameComponents.Player, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		game.Grid[gridElement.Line][gridElement.Col].Player = &entity
+		gameResources.Level.Grid[gridElement.Line][gridElement.Col].Player = &entity
 	}))
 	world.Manager.Join(gameComponents.Box, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		game.Grid[gridElement.Line][gridElement.Col].Box = &entity
+		gameResources.Level.Grid[gridElement.Line][gridElement.Col].Box = &entity
 	}))
 	world.Manager.Join(gameComponents.Goal, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		game.Grid[gridElement.Line][gridElement.Col].Goal = &entity
+		gameResources.Level.Grid[gridElement.Line][gridElement.Col].Goal = &entity
 	}))
 	world.Manager.Join(gameComponents.Wall, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		game.Grid[gridElement.Line][gridElement.Col].Wall = &entity
+		gameResources.Level.Grid[gridElement.Line][gridElement.Col].Wall = &entity
 	}))
 
 	// Set level info text
 	for iEntity := range levelInfoEntity {
-		world.Components.Engine.Text.Get(levelInfoEntity[iEntity]).(*ec.Text).Text = fmt.Sprintf("LEVEL %d/%d", levelNum+1, game.LevelCount)
+		world.Components.Engine.Text.Get(levelInfoEntity[iEntity]).(*ec.Text).Text = fmt.Sprintf("LEVEL %d/%d", levelNum+1, gameResources.LevelCount)
 	}
 
-	world.Resources.Game = game
+	LoadSave(world)
 }

@@ -10,47 +10,59 @@ import (
 
 // UndoSystem undoes the last move
 func UndoSystem(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*resources.Game)
 
 	undoAction := world.Resources.InputHandler.Actions[resources.UndoAction]
 	undoFastAction := world.Resources.InputHandler.Actions[resources.UndoFastAction]
+
+	if (undoAction || undoFastAction) && len(gameResources.Level.Movements) > 0 {
+		undo(world)
+	}
+}
+
+func undo(world w.World) {
+	gameComponents := world.Components.Game.(*gc.Components)
+	gameResources := world.Resources.Game.(*resources.Game)
 
 	firstPlayer := ecs.GetFirst(world.Manager.Join(gameComponents.Player, gameComponents.GridElement))
 	if firstPlayer == nil {
 		return
 	}
 	playerGridElement := gameComponents.GridElement.Get(ecs.Entity(*firstPlayer)).(*gc.GridElement)
+	playerLine := &playerGridElement.Line
+	playerCol := &playerGridElement.Col
 
-	if (undoAction || undoFastAction) && len(gameResources.Movements) > 0 {
-		switch gameResources.Movements[len(gameResources.Movements)-1] {
-		case resources.MovementUp:
-			undo(world, false, &playerGridElement.Line, &playerGridElement.Col, -1, 0)
-		case resources.MovementDown:
-			undo(world, false, &playerGridElement.Line, &playerGridElement.Col, 1, 0)
-		case resources.MovementLeft:
-			undo(world, false, &playerGridElement.Line, &playerGridElement.Col, 0, -1)
-		case resources.MovementRight:
-			undo(world, false, &playerGridElement.Line, &playerGridElement.Col, 0, 1)
-		case resources.MovementUpPush:
-			undo(world, true, &playerGridElement.Line, &playerGridElement.Col, -1, 0)
-		case resources.MovementDownPush:
-			undo(world, true, &playerGridElement.Line, &playerGridElement.Col, 1, 0)
-		case resources.MovementLeftPush:
-			undo(world, true, &playerGridElement.Line, &playerGridElement.Col, 0, -1)
-		case resources.MovementRightPush:
-			undo(world, true, &playerGridElement.Line, &playerGridElement.Col, 0, 1)
-		}
-		gameResources.Movements = gameResources.Movements[:len(gameResources.Movements)-1]
+	var boxPush bool
+	var directionLine, directionCol int
+	switch gameResources.Level.Movements[len(gameResources.Level.Movements)-1] {
+	case resources.MovementUp:
+		boxPush = false
+		directionLine, directionCol = -1, 0
+	case resources.MovementDown:
+		boxPush = false
+		directionLine, directionCol = 1, 0
+	case resources.MovementLeft:
+		boxPush = false
+		directionLine, directionCol = 0, -1
+	case resources.MovementRight:
+		boxPush = false
+		directionLine, directionCol = 0, 1
+	case resources.MovementUpPush:
+		boxPush = true
+		directionLine, directionCol = -1, 0
+	case resources.MovementDownPush:
+		boxPush = true
+		directionLine, directionCol = 1, 0
+	case resources.MovementLeftPush:
+		boxPush = true
+		directionLine, directionCol = 0, -1
+	case resources.MovementRightPush:
+		boxPush = true
+		directionLine, directionCol = 0, 1
 	}
-}
 
-func undo(world w.World, boxPush bool, playerLine, playerCol *int, directionLine, directionCol int) {
-	gameComponents := world.Components.Game.(*gc.Components)
-	gameResources := world.Resources.Game.(*resources.Game)
-
-	playerTile := &gameResources.Grid[*playerLine][*playerCol]
-	oneFrontTile := &gameResources.Grid[*playerLine+directionLine][*playerCol+directionCol]
+	playerTile := &gameResources.Level.Grid[*playerLine][*playerCol]
+	oneFrontTile := &gameResources.Level.Grid[*playerLine+directionLine][*playerCol+directionCol]
 
 	if boxPush {
 		boxGridElement := gameComponents.GridElement.Get(*oneFrontTile.Box).(*gc.GridElement)
@@ -60,9 +72,12 @@ func undo(world w.World, boxPush bool, playerLine, playerCol *int, directionLine
 		oneFrontTile.Box = nil
 	}
 
-	oneBackTile := &gameResources.Grid[*playerLine-directionLine][*playerCol-directionCol]
+	oneBackTile := &gameResources.Level.Grid[*playerLine-directionLine][*playerCol-directionCol]
 	oneBackTile.Player = playerTile.Player
 	playerTile.Player = nil
 	*playerLine -= directionLine
 	*playerCol -= directionCol
+
+	gameResources.Level.Movements = gameResources.Level.Movements[:len(gameResources.Level.Movements)-1]
+	gameResources.Level.Modified = true
 }

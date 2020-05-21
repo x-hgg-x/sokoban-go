@@ -31,7 +31,10 @@ func (st *LevelCompleteState) OnStop(world w.World) {
 	gameResources := world.Resources.Game.(*resources.Game)
 
 	world.Manager.DeleteAllEntities()
-	resources.InitLevel(world, gameResources.CurrentLevel)
+	gameResources.Level.Movements = []resources.MovementType{}
+	gameResources.Level.Modified = true
+	resources.SaveLevel(world)
+	resources.InitLevel(world, gameResources.Level.CurrentNum)
 }
 
 // Update method

@@ -35,11 +35,11 @@ const (
 var regexpValidChars = regexp.MustCompile(`^[ \-_#\.\$@\*\+]+$`)
 
 // LoadPackage loads level package from a text file
-func LoadPackage(packagePath string, world w.World) {
-	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
+func LoadPackage(packageName string, world w.World) error {
+	var packageErr error
 
 	// Load file
-	file, err := os.Open(packagePath)
+	file, err := os.Open(fmt.Sprintf("levels/%s/levels.txt", packageName))
 	utils.LogError(err)
 	defer file.Close()
 
@@ -53,30 +53,43 @@ func LoadPackage(packagePath string, world w.World) {
 	lines = append(lines, "")
 
 	// Split levels
+	emptyLine, description := true, false
 	levels := [][]string{}
 	currentLevel := []string{}
 	for _, line := range lines {
-		if len(strings.TrimSpace(line)) > 0 && regexpValidChars.MatchString(line) {
+		if len(strings.TrimSpace(line)) == 0 {
+			emptyLine = true
+			if len(currentLevel) > 0 {
+				levels = append(levels, currentLevel)
+				currentLevel = []string{}
+			}
+		} else if (emptyLine || description) && !regexpValidChars.MatchString(line) {
+			description = true
+		} else {
+			emptyLine, description = false, false
 			currentLevel = append(currentLevel, line)
-		} else if len(currentLevel) > 0 {
-			levels = append(levels, currentLevel)
-			currentLevel = []string{}
 		}
 	}
 
 	// Preload levels
+	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
 	prefabs.Game.Levels = []loader.EntityComponentList{}
 	for iLevel, level := range levels {
 		if componentList, err := PreloadLevel(world, level); err == nil {
 			prefabs.Game.Levels = append(prefabs.Game.Levels, *componentList)
 		} else {
-			log.Printf("error when loading level %d: %s", iLevel+1, err.Error())
+			packageErr = fmt.Errorf("error when loading level %d: %s", iLevel+1, err.Error())
+			break
 		}
 	}
 
 	if len(prefabs.Game.Levels) == 0 {
+		if packageErr != nil {
+			log.Println(packageErr)
+		}
 		utils.LogError(fmt.Errorf("invalid package: no valid levels in package"))
 	}
+	return packageErr
 }
 
 // PreloadLevel preloads a level from text lines
@@ -133,7 +146,7 @@ func PreloadLevel(world w.World, lines []string) (*loader.EntityComponentList, e
 				createGoalEntity(componentList, &gameSpriteSheet, iLine, iChar)
 				createPlayerEntity(componentList, &gameSpriteSheet, iLine, iChar)
 			default:
-				return nil, fmt.Errorf("invalid level: invalid char '%s'", string(char))
+				return nil, fmt.Errorf("invalid level: invalid char '%c'", char)
 			}
 		}
 	}

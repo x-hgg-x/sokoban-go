@@ -50,7 +50,7 @@ func main() {
 		gr.MoveUpAction, gr.MoveDownAction, gr.MoveLeftAction, gr.MoveRightAction,
 		gr.MoveUpFastAction, gr.MoveDownFastAction, gr.MoveLeftFastAction, gr.MoveRightFastAction,
 		gr.PreviousLevelAction, gr.PreviousLevelFastAction, gr.NextLevelAction, gr.NextLevelFastAction,
-		gr.UndoAction, gr.UndoFastAction, gr.RestartAction,
+		gr.UndoAction, gr.UndoFastAction, gr.RestartAction, gr.SaveAction,
 	}
 	controls, inputHandler := loader.LoadControls("config/controls.toml", axes, actions)
 	world.Resources.Controls = &controls

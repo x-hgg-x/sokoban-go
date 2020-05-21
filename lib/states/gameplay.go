@@ -6,6 +6,7 @@ import (
 	g "github.com/x-hgg-x/sokoban-go/lib/systems"
 
 	"github.com/x-hgg-x/goecsengine/states"
+	"github.com/x-hgg-x/goecsengine/utils"
 	w "github.com/x-hgg-x/goecsengine/world"
 
 	"github.com/hajimehoshi/ebiten"
@@ -17,11 +18,27 @@ type GameplayState struct{}
 
 // OnStart method
 func (st *GameplayState) OnStart(world w.World) {
-	// Load package
-	gloader.LoadPackage("levels/xsokoban/levels.txt", world)
+	// Define package name
+	packageName := "xsokoban"
 
-	// Load first level
-	resources.InitLevel(world, 0)
+	// Load package
+	utils.LogError(gloader.LoadPackage(packageName, world))
+
+	// Load game
+	game := resources.NewGame(world, packageName)
+	world.Resources.Game = game
+
+	// Load last played level
+	levelNum := 0
+	tree := resources.LoadSaveFile(world)
+	if savedCurrentLevel, ok := tree.Get("CurrentLevel").(int64); ok {
+		currentLevel := int(savedCurrentLevel) - 1
+		if currentLevel != game.Level.CurrentNum && 0 <= currentLevel && currentLevel < game.LevelCount {
+			levelNum = currentLevel
+		}
+	}
+
+	resources.InitLevel(world, levelNum)
 }
 
 // OnPause method
@@ -32,8 +49,9 @@ func (st *GameplayState) OnResume(world w.World) {}
 
 // OnStop method
 func (st *GameplayState) OnStop(world w.World) {
-	world.Resources.Game = nil
 	world.Manager.DeleteAllEntities()
+	resources.SaveLevel(world)
+	world.Resources.Game = nil
 }
 
 // Update method
@@ -41,6 +59,7 @@ func (st *GameplayState) Update(world w.World, screen *ebiten.Image) states.Tran
 	g.SwitchLevelSystem(world)
 	g.UndoSystem(world)
 	g.MoveSystem(world)
+	g.SaveSystem(world)
 	g.InfoSystem(world)
 	g.GridTransformSystem(world)
 

@@ -59,6 +59,11 @@ combinations = [[{ key = "R" }]]
 once = true
 
 
+[controls.actions.Save]
+combinations = [[{ key = "S" }]]
+once = true
+
+
 # Usage
 
 # Axes

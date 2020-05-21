@@ -18,16 +18,19 @@ func SwitchLevelSystem(world w.World) {
 
 	var newLevel int
 	switch {
-	case (previousLevelAction || previousLevelFastAction) && gameResources.CurrentLevel > 0:
-		newLevel = gameResources.CurrentLevel - 1
-	case (nextLevelAction || nextLevelFastAction) && gameResources.CurrentLevel < gameResources.LevelCount-1:
-		newLevel = gameResources.CurrentLevel + 1
+	case (previousLevelAction || previousLevelFastAction) && gameResources.Level.CurrentNum > 0:
+		newLevel = gameResources.Level.CurrentNum - 1
+	case (nextLevelAction || nextLevelFastAction) && gameResources.Level.CurrentNum < gameResources.LevelCount-1:
+		newLevel = gameResources.Level.CurrentNum + 1
 	case restartAction:
-		newLevel = gameResources.CurrentLevel
+		gameResources.Level.Movements = []resources.MovementType{}
+		gameResources.Level.Modified = true
+		newLevel = gameResources.Level.CurrentNum
 	default:
 		return
 	}
 
 	world.Manager.DeleteAllEntities()
+	resources.SaveLevel(world)
 	resources.InitLevel(world, newLevel)
 }
