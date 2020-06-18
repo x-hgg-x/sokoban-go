@@ -7,5 +7,5 @@
     color = [255, 255, 255, 255]
 
     [entity.components.UITransform]
-    translation = { x = 10, y = 670 }
-    pivot = "TopLeft"
+    translation = { x = 10, y = 652 }
+    pivot = "Dot"

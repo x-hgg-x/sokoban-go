@@ -9,25 +9,7 @@ import (
 	ecs "github.com/x-hgg-x/goecs/v2"
 	ec "github.com/x-hgg-x/goecsengine/components"
 	w "github.com/x-hgg-x/goecsengine/world"
-
-	"golang.org/x/image/font"
 )
-
-type levelTextData struct {
-	Texts    []string
-	FontFace font.Face
-	Pivot    string
-	YOffsets []int
-}
-
-func (l *levelTextData) computeDotOffsets() {
-	for _, text := range l.Texts {
-		_, y, _ := ec.ComputeDotOffset(text, l.FontFace, l.Pivot)
-		l.YOffsets = append(l.YOffsets, y)
-	}
-}
-
-var levelText *levelTextData
 
 // InfoSystem sets game info
 func InfoSystem(world w.World) {
@@ -49,18 +31,10 @@ func InfoSystem(world w.World) {
 	// Set text info
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-		uiTransform := world.Components.Engine.UITransform.Get(entity).(*ec.UITransform)
 		if text.ID == "level" {
 			text.Text = fmt.Sprintf("LEVEL %d/%d", gameResources.Level.CurrentNum+1, gameResources.LevelCount)
-			text.OffsetY = 0
 			if gameResources.Level.Modified {
-				if levelText == nil {
-					levelText = &levelTextData{Texts: []string{"LEVEL 1/1", "LEVEL 1/1(*)"}, FontFace: text.FontFace, Pivot: uiTransform.Pivot}
-					levelText.computeDotOffsets()
-				}
 				text.Text += "(*)"
-				// Readjust text position
-				text.OffsetY = levelText.YOffsets[0] - levelText.YOffsets[1]
 			}
 		}
 	}))
