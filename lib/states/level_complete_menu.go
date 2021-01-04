@@ -7,8 +7,8 @@ import (
 	"github.com/x-hgg-x/goecsengine/states"
 	w "github.com/x-hgg-x/goecsengine/world"
 
-	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/inpututil"
+	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 // LevelCompleteState is the level complete menu state
@@ -38,7 +38,7 @@ func (st *LevelCompleteState) OnStop(world w.World) {
 }
 
 // Update method
-func (st *LevelCompleteState) Update(world w.World, screen *ebiten.Image) states.Transition {
+func (st *LevelCompleteState) Update(world w.World) states.Transition {
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		return states.Transition{Type: states.TransPop}
 	}
