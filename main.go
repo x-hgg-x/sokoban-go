@@ -4,6 +4,7 @@ import (
 	_ "image/png"
 
 	gc "github.com/x-hgg-x/sokoban-go/lib/components"
+	gloader "github.com/x-hgg-x/sokoban-go/lib/loader"
 	gr "github.com/x-hgg-x/sokoban-go/lib/resources"
 	gs "github.com/x-hgg-x/sokoban-go/lib/states"
 
@@ -69,16 +70,16 @@ func main() {
 	// Load prefabs
 	world.Resources.Prefabs = &gr.Prefabs{
 		Menu: gr.MenuPrefabs{
-			LevelCompleteMenu: loader.EntityComponentList{Engine: loader.LoadEngineComponents("assets/metadata/entities/ui/level_complete_menu.toml", world)},
+			LevelCompleteMenu: gloader.PreloadEntities("assets/metadata/entities/ui/level_complete_menu.toml", world),
 		},
 		Game: gr.GamePrefabs{
-			LevelInfo: loader.EntityComponentList{Engine: loader.LoadEngineComponents("assets/metadata/entities/ui/level.toml", world)},
-			BoxInfo:   loader.EntityComponentList{Engine: loader.LoadEngineComponents("assets/metadata/entities/ui/box.toml", world)},
-			StepInfo:  loader.EntityComponentList{Engine: loader.LoadEngineComponents("assets/metadata/entities/ui/step.toml", world)},
+			LevelInfo: gloader.PreloadEntities("assets/metadata/entities/ui/level.toml", world),
+			BoxInfo:   gloader.PreloadEntities("assets/metadata/entities/ui/box.toml", world),
+			StepInfo:  gloader.PreloadEntities("assets/metadata/entities/ui/step.toml", world),
 		},
 	}
 
-	ebiten.SetWindowResizable(true)
+	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
 	ebiten.SetWindowSize(windowWidth, windowHeight)
 	ebiten.SetWindowTitle("Sokoban")
 

@@ -39,8 +39,7 @@ func LoadPackage(packageName string, world w.World) error {
 	var packageErr error
 
 	// Load file
-	file, err := os.Open(fmt.Sprintf("levels/%s/levels.txt", packageName))
-	utils.LogError(err)
+	file := utils.Try(os.Open(fmt.Sprintf("levels/%s/levels.txt", packageName)))
 	defer file.Close()
 
 	lines := []string{}
@@ -87,7 +86,7 @@ func LoadPackage(packageName string, world w.World) error {
 		if packageErr != nil {
 			log.Println(packageErr)
 		}
-		utils.LogError(fmt.Errorf("invalid package: no valid levels in package"))
+		utils.LogFatalf("invalid package: no valid levels in package")
 	}
 	return packageErr
 }

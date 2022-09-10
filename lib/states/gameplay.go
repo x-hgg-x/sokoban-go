@@ -1,6 +1,9 @@
 package states
 
 import (
+	"fmt"
+	"os"
+
 	gloader "github.com/x-hgg-x/sokoban-go/lib/loader"
 	"github.com/x-hgg-x/sokoban-go/lib/resources"
 	g "github.com/x-hgg-x/sokoban-go/lib/systems"
@@ -9,6 +12,7 @@ import (
 	"github.com/x-hgg-x/goecsengine/utils"
 	w "github.com/x-hgg-x/goecsengine/world"
 
+	"github.com/BurntSushi/toml"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -30,9 +34,12 @@ func (st *GameplayState) OnStart(world w.World) {
 
 	// Load last played level
 	levelNum := 0
-	tree := resources.LoadSaveFile(world)
-	if savedCurrentLevel, ok := tree.Get("CurrentLevel").(int64); ok {
-		currentLevel := int(savedCurrentLevel) - 1
+	if saveFile, err := os.ReadFile(fmt.Sprintf("config/%s/save.toml", packageName)); err == nil {
+		var encodedSaveConfig resources.EncodedSaveConfig
+		utils.Try(toml.Decode(string(saveFile), &encodedSaveConfig))
+		saveConfig := utils.Try(encodedSaveConfig.Decode())
+
+		currentLevel := int(saveConfig.CurrentLevel) - 1
 		if currentLevel != game.Level.CurrentNum && 0 <= currentLevel && currentLevel < game.LevelCount {
 			levelNum = currentLevel
 		}

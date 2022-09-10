@@ -1,74 +1,121 @@
 package resources
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"strings"
 
-	"github.com/x-hgg-x/goecsengine/math"
 	"github.com/x-hgg-x/goecsengine/utils"
 	w "github.com/x-hgg-x/goecsengine/world"
 
-	"github.com/pelletier/go-toml"
+	"github.com/BurntSushi/toml"
 )
 
-const maxLineChars = 100
+// SaveConfig contains the save configuration
+type SaveConfig struct {
+	CurrentLevel   int
+	Package        string
+	LevelMovements map[string]string
+}
 
-// LoadSaveFile loads save file
-func LoadSaveFile(world w.World) *toml.Tree {
-	gameResources := world.Resources.Game.(*Game)
+// Encode encodes the save configuration
+func (sc *SaveConfig) Encode() EncodedSaveConfig {
+	esc := make(EncodedSaveConfig, len(sc.LevelMovements)+2)
 
-	var tree *toml.Tree
-	packageConfig := fmt.Sprintf("config/%s", gameResources.PackageName)
-	if _, err := os.Stat(packageConfig + "/save.toml"); err == nil {
-		tree, err = toml.LoadFile(packageConfig + "/save.toml")
-		utils.LogError(err)
-	} else {
-		utils.LogError(os.MkdirAll(packageConfig, os.ModePerm))
-		tree, err = toml.Load("")
-		utils.LogError(err)
+	esc["CurrentLevel"] = sc.CurrentLevel
+	esc["Package"] = sc.Package
+
+	for k, v := range sc.LevelMovements {
+		esc[k] = map[string]string{"Movements": v}
 	}
-	return tree
+
+	return esc
+}
+
+// EncodedSaveConfig contains the encoded save configuration
+type EncodedSaveConfig map[string]interface{}
+
+// Decode decodes the encoded save configuration
+func (esc *EncodedSaveConfig) Decode() (sc SaveConfig, err error) {
+	data := *esc
+
+	if len(data) == 0 {
+		return SaveConfig{LevelMovements: make(map[string]string)}, nil
+	}
+
+	var currentLevel int
+	if v, ok := data["CurrentLevel"]; !ok {
+		return sc, fmt.Errorf("invalid TOML file")
+	} else if currentLevelField, ok := v.(int64); !ok {
+		return sc, fmt.Errorf("invalid TOML file")
+	} else {
+		currentLevel = int(currentLevelField)
+		delete(data, "CurrentLevel")
+	}
+
+	var packageName string
+	if v, ok := data["Package"]; !ok {
+		return sc, fmt.Errorf("invalid TOML file")
+	} else if packageNameField, ok := v.(string); !ok {
+		return sc, fmt.Errorf("invalid TOML file")
+	} else {
+		packageName = packageNameField
+		delete(data, "Package")
+	}
+
+	levelMovements := make(map[string]string, len(data))
+	for k, v := range data {
+		if vm, ok := v.(map[string]interface{}); !ok {
+			return sc, fmt.Errorf("invalid TOML file")
+		} else if mv, ok := vm["Movements"].(string); !ok {
+			return sc, fmt.Errorf("invalid TOML file")
+		} else {
+			levelMovements[k] = mv
+		}
+	}
+
+	sc = SaveConfig{
+		CurrentLevel:   currentLevel,
+		Package:        packageName,
+		LevelMovements: levelMovements,
+	}
+
+	return sc, nil
 }
 
 // SaveLevel saves level
 func SaveLevel(world w.World) {
 	gameResources := world.Resources.Game.(*Game)
-	if !gameResources.Level.Modified {
+	if !(world.Resources.InputHandler.Actions[SaveAction] || gameResources.Level.Modified) {
 		return
 	}
 
+	saveFilePath := fmt.Sprintf("config/%s/save.toml", gameResources.PackageName)
+
 	// Load existing save file
-	tree := LoadSaveFile(world)
+	var encodedSaveConfig EncodedSaveConfig
+	if saveFile, err := os.ReadFile(saveFilePath); err == nil {
+		utils.Try(toml.Decode(string(saveFile), &encodedSaveConfig))
+	}
+	saveConfig := utils.Try(encodedSaveConfig.Decode())
 
 	// Encode movements
-	movements := &bytes.Buffer{}
+	var movements strings.Builder
 	for _, movement := range gameResources.Level.Movements {
-		movements.WriteRune(movementChars[movement])
+		utils.Try(movements.WriteRune(movementChars[movement]))
 	}
 
-	// Movements are written as an array to avoid long lines
-	movementsList := []rune(movements.String())
-	movementsArray := []string{}
-
-	for start := 0; start < len(movementsList); start += maxLineChars {
-		end := math.Min(start+maxLineChars, len(movementsList))
-		movementsArray = append(movementsArray, string(movementsList[start:end]))
-	}
-
-	// Write tree
-	tree.Set(fmt.Sprintf("Level%d.Movements", gameResources.Level.CurrentNum+1), movementsArray)
-	tree.Set("Package", gameResources.PackageName)
-	tree.Set("CurrentLevel", int64(gameResources.Level.CurrentNum+1))
+	// Update save config
+	saveConfig.CurrentLevel = gameResources.Level.CurrentNum + 1
+	saveConfig.Package = gameResources.PackageName
+	saveConfig.LevelMovements[fmt.Sprintf("Level%d", gameResources.Level.CurrentNum+1)] = movements.String()
 
 	// Write to save file
-	saveFile, err := os.Create(fmt.Sprintf("config/%s/save.toml", gameResources.PackageName))
-	utils.LogError(err)
-	defer saveFile.Close()
-
-	err = toml.NewEncoder(saveFile).Indentation("    ").ArraysWithOneElementPerLine(true).Encode(tree)
-	utils.LogError(err)
+	var encoded strings.Builder
+	encoder := toml.NewEncoder(&encoded)
+	encoder.Indent = ""
+	utils.LogError(encoder.Encode(saveConfig.Encode()))
+	utils.LogError(os.WriteFile(saveFilePath, []byte(encoded.String()), 0o666))
 
 	gameResources.Level.Modified = false
 }
@@ -77,30 +124,20 @@ func SaveLevel(world w.World) {
 func LoadSave(world w.World) {
 	gameResources := world.Resources.Game.(*Game)
 
-	packageConfig := fmt.Sprintf("config/%s", gameResources.PackageName)
-	tree, err := toml.LoadFile(packageConfig + "/save.toml")
+	var encodedSaveConfig EncodedSaveConfig
+	_, err := toml.DecodeFile(fmt.Sprintf("config/%s/save.toml", gameResources.PackageName), &encodedSaveConfig)
 	if err != nil {
 		return
 	}
 
-	// Read movements array
-	levelArrayMovements, ok := tree.Get(fmt.Sprintf("Level%d.Movements", gameResources.Level.CurrentNum+1)).([]interface{})
-	if !ok {
+	saveConfig, err := encodedSaveConfig.Decode()
+	if err != nil {
 		return
-	}
-
-	levelMovements := strings.Builder{}
-	for iMovement := range levelArrayMovements {
-		s, ok := levelArrayMovements[iMovement].(string)
-		if !ok {
-			return
-		}
-		levelMovements.WriteString(s)
 	}
 
 	// Decode movements
 	movements := []MovementType{}
-	for _, char := range levelMovements.String() {
+	for _, char := range saveConfig.LevelMovements[fmt.Sprintf("Level%d", gameResources.Level.CurrentNum+1)] {
 		if movement, ok := movementCharMap[char]; ok {
 			movements = append(movements, movement)
 		} else {
