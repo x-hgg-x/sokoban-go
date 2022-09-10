@@ -1,11 +1,11 @@
 [[entity]]
 
-    [entity.components.Text]
-    id = "step"
-    text = "STEPS: 0"
-    font_face = { font = "joystix", options.size = 25.0 }
-    color = [255, 255, 255, 255]
+[entity.components.Text]
+id = "step"
+text = "STEPS: 0"
+font_face = { font = "joystix", options.size = 25.0 }
+color = [255, 255, 255, 255]
 
-    [entity.components.UITransform]
-    translation = { x = 950, y = 670 }
-    pivot = "TopRight"
+[entity.components.UITransform]
+translation = { x = 950, y = 670 }
+pivot = "TopRight"
