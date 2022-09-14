@@ -52,20 +52,13 @@ func LoadPackage(packageName string, world w.World) error {
 	lines = append(lines, "")
 
 	// Split levels
-	emptyLine, description := true, false
 	levels := [][]string{}
 	currentLevel := []string{}
 	for _, line := range lines {
-		if len(strings.TrimSpace(line)) == 0 {
-			emptyLine = true
-			if len(currentLevel) > 0 {
+		if len(strings.TrimSpace(line)) == 0 && len(currentLevel) > 0 {
 				levels = append(levels, currentLevel)
 				currentLevel = []string{}
-			}
-		} else if (emptyLine || description) && !regexpValidChars.MatchString(line) {
-			description = true
-		} else {
-			emptyLine, description = false, false
+		} else if regexpValidChars.MatchString(line) {
 			currentLevel = append(currentLevel, line)
 		}
 	}
@@ -104,7 +97,7 @@ func PreloadLevel(world w.World, lines []string) (*loader.EntityComponentList, e
 	}
 
 	if gridWidth > resources.MaxWidth || gridHeight > resources.MaxHeight {
-		return nil, fmt.Errorf("level size must be less than 30x20")
+		return nil, fmt.Errorf("level size must be less than %dx%d", resources.MaxWidth, resources.MaxHeight)
 	}
 	if boxCount != goalCount {
 		return nil, fmt.Errorf("invalid level: box count and goal count must be the same")
@@ -196,8 +189,8 @@ func normalizeLevel(lines []string, gridWidth, gridHeight int) []string {
 	for iPadding := range padding {
 		padding[iPadding] = strings.Repeat(string(charExterior), resources.MaxWidth)
 	}
-	lines = append(padding[:len(padding)/2], lines...)
-	lines = append(lines, padding[len(padding)/2:]...)
+	index := len(padding) / 2
+	lines = append(padding[:index], append(lines, padding[index:]...)...)
 
 	return lines
 }

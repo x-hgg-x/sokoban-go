@@ -34,6 +34,7 @@ func (st *GameplayState) OnStart(world w.World) {
 
 	// Load last played level
 	levelNum := 0
+	utils.LogError(os.MkdirAll(fmt.Sprintf("config/%s", packageName), os.ModePerm))
 	if saveFile, err := os.ReadFile(fmt.Sprintf("config/%s/save.toml", packageName)); err == nil {
 		var encodedSaveConfig resources.EncodedSaveConfig
 		utils.Try(toml.Decode(string(saveFile), &encodedSaveConfig))

@@ -36,7 +36,6 @@ const (
 	MovementDown
 	MovementLeft
 	MovementRight
-
 	MovementUpPush
 	MovementDownPush
 	MovementLeftPush
