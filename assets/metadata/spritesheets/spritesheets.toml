@@ -1,5 +1,5 @@
 [sprite_sheet.game]
-texture_image = "assets/textures/game.png"
+texture_image = "assets/lfs/textures/game.png"
 sprites = [
     # Exterior
     { x = 0,   y = 0, width = 32, height = 32 }, # Sprite 0
