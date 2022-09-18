@@ -90,7 +90,7 @@ func SaveLevel(world w.World) {
 		return
 	}
 
-	saveFilePath := fmt.Sprintf("config/%s/save.toml", gameResources.PackageName)
+	saveFilePath := fmt.Sprintf("config/%s/save.toml", gameResources.Package.Name)
 
 	// Load existing save file
 	var encodedSaveConfig EncodedSaveConfig
@@ -102,12 +102,12 @@ func SaveLevel(world w.World) {
 	// Encode movements
 	var movements strings.Builder
 	for _, movement := range gameResources.Level.Movements {
-		utils.Try(movements.WriteRune(movementChars[movement]))
+		utils.LogError(movements.WriteByte(movementChars[movement]))
 	}
 
 	// Update save config
 	saveConfig.CurrentLevel = gameResources.Level.CurrentNum + 1
-	saveConfig.Package = gameResources.PackageName
+	saveConfig.Package = gameResources.Package.Name
 	saveConfig.LevelMovements[fmt.Sprintf("Level%d", gameResources.Level.CurrentNum+1)] = movements.String()
 
 	// Write to save file
@@ -125,7 +125,7 @@ func LoadSave(world w.World) {
 	gameResources := world.Resources.Game.(*Game)
 
 	var encodedSaveConfig EncodedSaveConfig
-	_, err := toml.DecodeFile(fmt.Sprintf("config/%s/save.toml", gameResources.PackageName), &encodedSaveConfig)
+	_, err := toml.DecodeFile(fmt.Sprintf("config/%s/save.toml", gameResources.Package.Name), &encodedSaveConfig)
 	if err != nil {
 		return
 	}
@@ -137,7 +137,7 @@ func LoadSave(world w.World) {
 
 	// Decode movements
 	movements := []MovementType{}
-	for _, char := range saveConfig.LevelMovements[fmt.Sprintf("Level%d", gameResources.Level.CurrentNum+1)] {
+	for _, char := range []byte(saveConfig.LevelMovements[fmt.Sprintf("Level%d", gameResources.Level.CurrentNum+1)]) {
 		if movement, ok := movementCharMap[char]; ok {
 			movements = append(movements, movement)
 		} else {

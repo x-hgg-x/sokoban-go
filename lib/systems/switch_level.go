@@ -20,7 +20,7 @@ func SwitchLevelSystem(world w.World) {
 	switch {
 	case (previousLevelAction || previousLevelFastAction) && gameResources.Level.CurrentNum > 0:
 		newLevel = gameResources.Level.CurrentNum - 1
-	case (nextLevelAction || nextLevelFastAction) && gameResources.Level.CurrentNum < gameResources.LevelCount-1:
+	case (nextLevelAction || nextLevelFastAction) && gameResources.Level.CurrentNum < len(gameResources.Package.Levels)-1:
 		newLevel = gameResources.Level.CurrentNum + 1
 	case restartAction:
 		gameResources.Level.Movements = []resources.MovementType{}

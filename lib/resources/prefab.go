@@ -9,7 +9,6 @@ type MenuPrefabs struct {
 
 // GamePrefabs contains game prefabs
 type GamePrefabs struct {
-	Levels    []loader.EntityComponentList
 	LevelInfo loader.EntityComponentList
 	BoxInfo   loader.EntityComponentList
 	StepInfo  loader.EntityComponentList

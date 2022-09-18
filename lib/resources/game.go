@@ -4,10 +4,12 @@ import (
 	"fmt"
 
 	gc "github.com/x-hgg-x/sokoban-go/lib/components"
+	gloader "github.com/x-hgg-x/sokoban-go/lib/loader"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
 	ec "github.com/x-hgg-x/goecsengine/components"
 	"github.com/x-hgg-x/goecsengine/loader"
+	"github.com/x-hgg-x/goecsengine/utils"
 	w "github.com/x-hgg-x/goecsengine/world"
 )
 
@@ -52,9 +54,9 @@ func GetPushMovement(m MovementType) MovementType {
 	return m%4 + 4
 }
 
-var movementChars = []rune("udlrUDLR")
+var movementChars = []byte("udlrUDLR")
 
-var movementCharMap = map[rune]MovementType{
+var movementCharMap = map[byte]MovementType{
 	'u': MovementUp,
 	'd': MovementDown,
 	'l': MovementLeft,
@@ -81,18 +83,17 @@ type Level struct {
 	Modified   bool
 }
 
-// Game contains game resources
-type Game struct {
-	StateEvent  StateEvent
-	PackageName string
-	LevelCount  int
-	Level       Level
+// PackageData contains level package data
+type PackageData struct {
+	Name   string
+	Levels [][][]byte
 }
 
-// NewGame creates a new game
-func NewGame(world w.World, packageName string) *Game {
-	prefabs := world.Resources.Prefabs.(*Prefabs)
-	return &Game{PackageName: packageName, LevelCount: len(prefabs.Game.Levels)}
+// Game contains game resources
+type Game struct {
+	StateEvent StateEvent
+	Package    PackageData
+	Level      Level
 }
 
 // InitLevel inits level
@@ -107,7 +108,10 @@ func InitLevel(world w.World, levelNum int) {
 	levelInfoEntity := loader.AddEntities(world, prefabs.Game.LevelInfo)
 
 	// Load level
-	loader.AddEntities(world, prefabs.Game.Levels[levelNum])
+	grid := gameResources.Package.Levels[levelNum]
+	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
+	level := utils.Try(gloader.LoadLevel(grid, MaxWidth, MaxHeight, &gameSpriteSheet))
+	loader.AddEntities(world, level)
 	gameResources.Level = Level{CurrentNum: levelNum}
 
 	// Set grid
@@ -130,7 +134,7 @@ func InitLevel(world w.World, levelNum int) {
 
 	// Set level info text
 	for iEntity := range levelInfoEntity {
-		world.Components.Engine.Text.Get(levelInfoEntity[iEntity]).(*ec.Text).Text = fmt.Sprintf("LEVEL %d/%d", levelNum+1, gameResources.LevelCount)
+		world.Components.Engine.Text.Get(levelInfoEntity[iEntity]).(*ec.Text).Text = fmt.Sprintf("LEVEL %d/%d", levelNum+1, len(gameResources.Package.Levels))
 	}
 
 	LoadSave(world)

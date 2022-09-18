@@ -32,7 +32,7 @@ func InfoSystem(world w.World) {
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
 		if text.ID == "level" {
-			text.Text = fmt.Sprintf("LEVEL %d/%d", gameResources.Level.CurrentNum+1, gameResources.LevelCount)
+			text.Text = fmt.Sprintf("LEVEL %d/%d", gameResources.Level.CurrentNum+1, len(gameResources.Package.Levels))
 			if gameResources.Level.Modified {
 				text.Text += "(*)"
 			}
