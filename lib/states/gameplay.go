@@ -26,8 +26,8 @@ func (st *GameplayState) OnStart(world w.World) {
 	packageName := "xsokoban"
 
 	// Load game
-	packageLevels := utils.Try(gloader.LoadPackage(packageName))
-	world.Resources.Game = &resources.Game{Package: resources.PackageData{Name: packageName, Levels: packageLevels}}
+	packageData := utils.Try(gloader.LoadPackage(packageName))
+	world.Resources.Game = &resources.Game{Package: packageData}
 
 	// Load last played level
 	levelNum := 0
@@ -38,7 +38,7 @@ func (st *GameplayState) OnStart(world w.World) {
 		saveConfig := utils.Try(encodedSaveConfig.Decode())
 
 		currentLevel := int(saveConfig.CurrentLevel) - 1
-		if 0 <= currentLevel && currentLevel < len(packageLevels) {
+		if 0 <= currentLevel && currentLevel < len(packageData.Levels) {
 			levelNum = currentLevel
 		}
 	}

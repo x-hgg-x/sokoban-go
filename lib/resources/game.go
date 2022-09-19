@@ -83,16 +83,10 @@ type Level struct {
 	Modified   bool
 }
 
-// PackageData contains level package data
-type PackageData struct {
-	Name   string
-	Levels [][][]byte
-}
-
 // Game contains game resources
 type Game struct {
 	StateEvent StateEvent
-	Package    PackageData
+	Package    gloader.PackageData
 	Level      Level
 }
 
@@ -108,9 +102,8 @@ func InitLevel(world w.World, levelNum int) {
 	levelInfoEntity := loader.AddEntities(world, prefabs.Game.LevelInfo)
 
 	// Load level
-	grid := gameResources.Package.Levels[levelNum]
 	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-	level := utils.Try(gloader.LoadLevel(grid, MaxWidth, MaxHeight, &gameSpriteSheet))
+	level := utils.Try(gloader.LoadLevel(gameResources.Package, levelNum, MaxWidth, MaxHeight, &gameSpriteSheet))
 	loader.AddEntities(world, level)
 	gameResources.Level = Level{CurrentNum: levelNum}
 

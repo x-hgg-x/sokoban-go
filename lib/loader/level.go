@@ -44,8 +44,24 @@ const (
 
 var regexpValidChars = regexp.MustCompile(`^[ \-_#\.\$@\*\+]+$`)
 
+// LevelData contains level data
+type LevelData struct {
+	Index  int
+	Width  int
+	Height int
+}
+
+// PackageData contains level package data
+type PackageData struct {
+	Name   string
+	Levels []LevelData
+	Blocks []byte
+}
+
 // LoadPackage loads level package from a text file
-func LoadPackage(packageName string) (packageLevels [][][]byte, packageErr error) {
+func LoadPackage(packageName string) (packageData PackageData, packageErr error) {
+	packageData.Name = packageName
+
 	// Load file
 	file := utils.Try(os.Open(fmt.Sprintf("levels/%s/levels.txt", packageName)))
 	defer file.Close()
@@ -72,16 +88,25 @@ func LoadPackage(packageName string) (packageLevels [][][]byte, packageErr error
 	}
 
 	// Normalize levels
+	currentBlockIndex := 0
 	for iLevel, level := range levels {
 		if grid, err := normalizeLevel(level); err == nil {
-			packageLevels = append(packageLevels, grid)
+			gridWidth := len(grid[0])
+			gridHeight := len(grid)
+
+			packageData.Levels = append(packageData.Levels, LevelData{Index: currentBlockIndex, Width: gridWidth, Height: gridHeight})
+			currentBlockIndex += gridWidth * gridHeight
+
+			for _, line := range grid {
+				packageData.Blocks = append(packageData.Blocks, line...)
+			}
 		} else {
 			packageErr = fmt.Errorf("error when loading level %d: %s", iLevel+1, err.Error())
 			break
 		}
 	}
 
-	if len(packageLevels) == 0 {
+	if currentBlockIndex == 0 {
 		if packageErr != nil {
 			log.Println(packageErr)
 		}
@@ -184,15 +209,21 @@ func fillExterior(grid [][]byte, line, col, gridWidth, gridHeight int) {
 	}
 }
 
-// LoadLevel loads a level from a grid
-func LoadLevel(grid [][]byte, maxWidth, maxHeight int, gameSpriteSheet *ec.SpriteSheet) (loader.EntityComponentList, error) {
+// LoadLevel loads a level
+func LoadLevel(packageData PackageData, levelNum, maxWidth, maxHeight int, gameSpriteSheet *ec.SpriteSheet) (loader.EntityComponentList, error) {
 	componentList := loader.EntityComponentList{}
 
-	horizontalPadding := maxWidth - len(grid[0])
+	levelData := packageData.Levels[levelNum]
+	gridWidth := levelData.Width
+	gridHeight := levelData.Height
+	gridSize := gridWidth * gridHeight
+	grid := packageData.Blocks[levelData.Index : levelData.Index+gridSize]
+
+	horizontalPadding := maxWidth - gridWidth
 	horizontalPaddingBefore := horizontalPadding / 2
 	horizontalPaddingAfter := horizontalPadding - horizontalPaddingBefore
 
-	verticalPadding := maxHeight - len(grid)
+	verticalPadding := maxHeight - gridHeight
 	verticalPaddingBefore := verticalPadding / 2
 	verticalPaddingAfter := verticalPadding - verticalPaddingBefore
 
@@ -202,14 +233,15 @@ func LoadLevel(grid [][]byte, maxWidth, maxHeight int, gameSpriteSheet *ec.Sprit
 		}
 	}
 
-	for iGridLine := range grid {
+	for iGridLine := 0; iGridLine < gridHeight; iGridLine++ {
 		iLine := iGridLine + verticalPaddingBefore
 
 		for iCol := 0; iCol < horizontalPaddingBefore; iCol++ {
 			createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 		}
 
-		for iGridCol, char := range grid[iGridLine] {
+		for iGridCol := 0; iGridCol < gridWidth; iGridCol++ {
+			char := grid[iGridLine*gridWidth+iGridCol]
 			iCol := iGridCol + horizontalPaddingBefore
 
 			switch char {
