@@ -31,24 +31,16 @@ func InfoSystem(world w.World) {
 	// Set text info
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-		if text.ID == "level" {
+
+		switch text.ID {
+		case "level":
 			text.Text = fmt.Sprintf("LEVEL %d/%d", gameResources.Level.CurrentNum+1, len(gameResources.Package.Levels))
 			if gameResources.Level.Modified {
 				text.Text += "(*)"
 			}
-		}
-	}))
-
-	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
-		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-		if text.ID == "box" {
+		case "box":
 			text.Text = fmt.Sprintf("BOX: %d/%d", boxOnGoalCount, boxCount)
-		}
-	}))
-
-	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
-		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
-		if text.ID == "step" {
+		case "step":
 			text.Text = fmt.Sprintf("STEPS: %d", len(gameResources.Level.Movements))
 		}
 	}))
