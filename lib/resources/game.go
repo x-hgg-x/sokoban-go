@@ -108,21 +108,22 @@ func InitLevel(world w.World, levelNum int) {
 	gameResources.Level = Level{CurrentNum: levelNum}
 
 	// Set grid
-	world.Manager.Join(gameComponents.Player, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
+	world.Manager.Join(gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
 		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		gameResources.Level.Grid[gridElement.Line][gridElement.Col].Player = &entity
-	}))
-	world.Manager.Join(gameComponents.Box, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		gameResources.Level.Grid[gridElement.Line][gridElement.Col].Box = &entity
-	}))
-	world.Manager.Join(gameComponents.Goal, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		gameResources.Level.Grid[gridElement.Line][gridElement.Col].Goal = &entity
-	}))
-	world.Manager.Join(gameComponents.Wall, gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		gameResources.Level.Grid[gridElement.Line][gridElement.Col].Wall = &entity
+		tile := &gameResources.Level.Grid[gridElement.Line][gridElement.Col]
+
+		if entity.HasComponent(gameComponents.Player) {
+			tile.Player = &entity
+		}
+		if entity.HasComponent(gameComponents.Box) {
+			tile.Box = &entity
+		}
+		if entity.HasComponent(gameComponents.Goal) {
+			tile.Goal = &entity
+		}
+		if entity.HasComponent(gameComponents.Wall) {
+			tile.Wall = &entity
+		}
 	}))
 
 	// Set level info text
