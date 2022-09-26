@@ -3,21 +3,13 @@ package resources
 import (
 	"fmt"
 
-	gc "github.com/x-hgg-x/sokoban-go/lib/components"
 	gloader "github.com/x-hgg-x/sokoban-go/lib/loader"
+	gutils "github.com/x-hgg-x/sokoban-go/lib/utils"
 
-	ecs "github.com/x-hgg-x/goecs/v2"
 	ec "github.com/x-hgg-x/goecsengine/components"
 	"github.com/x-hgg-x/goecsengine/loader"
 	"github.com/x-hgg-x/goecsengine/utils"
 	w "github.com/x-hgg-x/goecsengine/world"
-)
-
-const (
-	// MaxWidth is the maximum level width
-	MaxWidth = 30
-	// MaxHeight is the maximum level height
-	MaxHeight = 20
 )
 
 // StateEvent is an event for game progression
@@ -30,7 +22,7 @@ const (
 )
 
 // MovementType is a movement type
-type MovementType int
+type MovementType uint8
 
 // List of movements
 const (
@@ -67,32 +59,46 @@ var movementCharMap = map[byte]MovementType{
 	'R': MovementRightPush,
 }
 
-// Tile contains tile entities
-type Tile struct {
-	Player *ecs.Entity
-	Box    *ecs.Entity
-	Goal   *ecs.Entity
-	Wall   *ecs.Entity
-}
+// PackageData contains level package data
+type PackageData = gloader.PackageData
+
+// Tile is a game tile
+type Tile = gloader.Tile
+
+// List of game tiles
+const (
+	TilePlayer = gloader.TilePlayer
+	TileBox    = gloader.TileBox
+	TileGoal   = gloader.TileGoal
+	TileWall   = gloader.TileWall
+	TileEmpty  = gloader.TileEmpty
+)
 
 // Level is a game level
 type Level struct {
 	CurrentNum int
-	Grid       [MaxHeight][MaxWidth]Tile
+	Grid       gutils.Vec2d[Tile]
 	Movements  []MovementType
 	Modified   bool
+}
+
+// GridLayout is the grid layout
+type GridLayout struct {
+	Width    int
+	Height   int
+	Modified bool
 }
 
 // Game contains game resources
 type Game struct {
 	StateEvent StateEvent
-	Package    gloader.PackageData
+	Package    PackageData
 	Level      Level
+	GridLayout GridLayout
 }
 
 // InitLevel inits level
 func InitLevel(world w.World, levelNum int) {
-	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*Game)
 
 	// Load ui entities
@@ -103,28 +109,10 @@ func InitLevel(world w.World, levelNum int) {
 
 	// Load level
 	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-	level := utils.Try(gloader.LoadLevel(gameResources.Package, levelNum, MaxWidth, MaxHeight, &gameSpriteSheet))
-	loader.AddEntities(world, level)
-	gameResources.Level = Level{CurrentNum: levelNum}
-
-	// Set grid
-	world.Manager.Join(gameComponents.GridElement).Visit(ecs.Visit(func(entity ecs.Entity) {
-		gridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		tile := &gameResources.Level.Grid[gridElement.Line][gridElement.Col]
-
-		if entity.HasComponent(gameComponents.Player) {
-			tile.Player = &entity
-		}
-		if entity.HasComponent(gameComponents.Box) {
-			tile.Box = &entity
-		}
-		if entity.HasComponent(gameComponents.Goal) {
-			tile.Goal = &entity
-		}
-		if entity.HasComponent(gameComponents.Wall) {
-			tile.Wall = &entity
-		}
-	}))
+	gridLayout := gameResources.GridLayout
+	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, levelNum, gridLayout.Width, gridLayout.Height, &gameSpriteSheet))
+	loader.AddEntities(world, levelComponentList)
+	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
 
 	// Set level info text
 	for iEntity := range levelInfoEntity {

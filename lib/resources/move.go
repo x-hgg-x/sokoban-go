@@ -1,24 +1,27 @@
 package resources
 
 import (
-	gc "github.com/x-hgg-x/sokoban-go/lib/components"
-
-	ecs "github.com/x-hgg-x/goecs/v2"
 	w "github.com/x-hgg-x/goecsengine/world"
 )
 
 // Move executes a series of movements
 func Move(world w.World, movements ...MovementType) {
-	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*Game)
 
-	firstPlayer := ecs.GetFirst(world.Manager.Join(gameComponents.Player, gameComponents.GridElement))
-	if firstPlayer == nil {
-		return
+	levelWidth := gameResources.Level.Grid.NCols
+	levelHeight := gameResources.Level.Grid.NRows
+
+	playerIndex := -1
+	for iTile, tile := range gameResources.Level.Grid.Data {
+		if tile.Contains(TilePlayer) {
+			playerIndex = iTile
+			break
+		}
 	}
-	playerGridElement := gameComponents.GridElement.Get(ecs.Entity(*firstPlayer)).(*gc.GridElement)
-	playerLine := &playerGridElement.Line
-	playerCol := &playerGridElement.Col
+
+	playerTile := &gameResources.Level.Grid.Data[playerIndex]
+	playerLine := playerIndex / levelWidth
+	playerCol := playerIndex % levelWidth
 
 	for _, movement := range movements {
 		movement = GetSimpleMovement(movement)
@@ -35,46 +38,42 @@ func Move(world w.World, movements ...MovementType) {
 			directionLine, directionCol = 0, 1
 		}
 
-		oneFrontLine := *playerLine + directionLine
-		oneFrontCol := *playerCol + directionCol
-		twoFrontLine := *playerLine + 2*directionLine
-		twoFrontCol := *playerCol + 2*directionCol
+		oneFrontLine := playerLine + directionLine
+		oneFrontCol := playerCol + directionCol
+		twoFrontLine := playerLine + 2*directionLine
+		twoFrontCol := playerCol + 2*directionCol
 
 		// Check grid edge
-		if !(0 <= oneFrontLine && oneFrontLine < MaxHeight && 0 <= oneFrontCol && oneFrontCol < MaxWidth) {
+		if !(0 <= oneFrontLine && oneFrontLine < levelHeight && 0 <= oneFrontCol && oneFrontCol < levelWidth) {
 			return
 		}
-		oneFrontTile := &gameResources.Level.Grid[oneFrontLine][oneFrontCol]
+		oneFrontTile := gameResources.Level.Grid.Get(oneFrontLine, oneFrontCol)
 
 		// No move if a wall is ahead
-		if oneFrontTile.Wall != nil {
+		if oneFrontTile.Contains(TileWall) {
 			return
 		}
 
-		if box := oneFrontTile.Box; box != nil {
+		if oneFrontTile.Contains(TileBox) {
 			// Check grid edge
-			if !(0 <= twoFrontLine && twoFrontLine < MaxHeight && 0 <= twoFrontCol && twoFrontCol < MaxWidth) {
+			if !(0 <= twoFrontLine && twoFrontLine < levelHeight && 0 <= twoFrontCol && twoFrontCol < levelWidth) {
 				return
 			}
-			twoFrontTile := &gameResources.Level.Grid[twoFrontLine][twoFrontCol]
+			twoFrontTile := gameResources.Level.Grid.Get(twoFrontLine, twoFrontCol)
 
 			// No move if two boxes or a box and a wall are ahead
-			if twoFrontTile.Box != nil || twoFrontTile.Wall != nil {
+			if twoFrontTile.ContainsAny(TileBox | TileWall) {
 				return
 			}
-			boxGridElement := gameComponents.GridElement.Get(*box).(*gc.GridElement)
-			boxGridElement.Line = twoFrontLine
-			boxGridElement.Col = twoFrontCol
-			twoFrontTile.Box = oneFrontTile.Box
-			oneFrontTile.Box = nil
+
+			twoFrontTile.Set(TileBox)
+			oneFrontTile.Remove(TileBox)
+
 			movement = GetPushMovement(movement)
 		}
 
-		playerTile := &gameResources.Level.Grid[*playerLine][*playerCol]
-		oneFrontTile.Player = playerTile.Player
-		playerTile.Player = nil
-		*playerLine = oneFrontLine
-		*playerCol = oneFrontCol
+		oneFrontTile.Set(TilePlayer)
+		playerTile.Remove(TilePlayer)
 
 		gameResources.Level.Movements = append(gameResources.Level.Movements, movement)
 		gameResources.Level.Modified = true

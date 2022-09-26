@@ -18,8 +18,8 @@ import (
 )
 
 const (
-	gameWidth  = 960
-	gameHeight = 680
+	minGameWidth  = 960
+	minGameHeight = 680
 )
 
 type mainGame struct {
@@ -28,7 +28,7 @@ type mainGame struct {
 }
 
 func (game *mainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return gameWidth, gameHeight
+	return minGameWidth, minGameHeight
 }
 
 func (game *mainGame) Update() error {
@@ -44,7 +44,7 @@ func main() {
 	world := w.InitWorld(&gc.Components{})
 
 	// Init screen dimensions
-	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: gameWidth, Height: gameHeight}
+	world.Resources.ScreenDimensions = &er.ScreenDimensions{Width: minGameWidth, Height: minGameHeight}
 
 	// Load controls
 	axes := []string{}
@@ -79,7 +79,7 @@ func main() {
 	}
 
 	ebiten.SetWindowResizingMode(ebiten.WindowResizingModeEnabled)
-	ebiten.SetWindowSize(gameWidth, gameHeight)
+	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("Sokoban")
 
 	utils.LogError(ebiten.RunGame(&mainGame{world, es.Init(&gs.GameplayState{}, world)}))

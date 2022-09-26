@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	gc "github.com/x-hgg-x/sokoban-go/lib/components"
+	gutils "github.com/x-hgg-x/sokoban-go/lib/utils"
 
 	ec "github.com/x-hgg-x/goecsengine/components"
 	"github.com/x-hgg-x/goecsengine/loader"
@@ -16,8 +17,8 @@ import (
 	"github.com/x-hgg-x/goecsengine/utils"
 )
 
-// MaxGameSize is the maximum game size
-const MaxGameSize = 100
+// MaxGridSize is the maximum grid size
+const MaxGridSize = 100
 
 const (
 	exteriorSpriteNumber = 0
@@ -44,18 +45,42 @@ const (
 
 var regexpValidChars = regexp.MustCompile(`^[ \-_#\.\$@\*\+]+$`)
 
-// LevelData contains level data
-type LevelData struct {
-	Index  int
-	Width  int
-	Height int
-}
-
 // PackageData contains level package data
 type PackageData struct {
 	Name   string
-	Levels []LevelData
-	Blocks []byte
+	Levels []gutils.Vec2d[byte]
+}
+
+// Tile is a game tile
+type Tile uint8
+
+// List of game tiles
+const (
+	TilePlayer Tile = 1 << iota
+	TileBox
+	TileGoal
+	TileWall
+	TileEmpty Tile = 0
+)
+
+// Contains checks if a game tile contains the provided tile
+func (t *Tile) Contains(other Tile) bool {
+	return (*t & other) == other
+}
+
+// ContainsAny checks if a game tile contains any of the provided tiles
+func (t *Tile) ContainsAny(other Tile) bool {
+	return (*t & other) != 0
+}
+
+// Set adds the provided tile to a game tile
+func (t *Tile) Set(other Tile) {
+	*t |= other
+}
+
+// Remove removes the provided tile to a game tile
+func (t *Tile) Remove(other Tile) {
+	*t &= 0xFF ^ other
 }
 
 // LoadPackage loads level package from a text file
@@ -88,25 +113,23 @@ func LoadPackage(packageName string) (packageData PackageData, packageErr error)
 	}
 
 	// Normalize levels
-	currentBlockIndex := 0
 	for iLevel, level := range levels {
 		if grid, err := normalizeLevel(level); err == nil {
 			gridWidth := len(grid[0])
 			gridHeight := len(grid)
 
-			packageData.Levels = append(packageData.Levels, LevelData{Index: currentBlockIndex, Width: gridWidth, Height: gridHeight})
-			currentBlockIndex += gridWidth * gridHeight
-
+			blocks := make([]byte, 0, gridWidth*gridHeight)
 			for _, line := range grid {
-				packageData.Blocks = append(packageData.Blocks, line...)
+				blocks = append(blocks, line...)
 			}
+			packageData.Levels = append(packageData.Levels, utils.Try(gutils.NewVec2d(gridHeight, gridWidth, blocks)))
 		} else {
 			packageErr = fmt.Errorf("error when loading level %d: %s", iLevel+1, err.Error())
 			break
 		}
 	}
 
-	if currentBlockIndex == 0 {
+	if len(packageData.Levels) == 0 {
 		if packageErr != nil {
 			log.Println(packageErr)
 		}
@@ -126,8 +149,8 @@ func normalizeLevel(lines []string) ([][]byte, error) {
 		goalCount += strings.Count(line, string(charGoal)) + strings.Count(line, string(charBoxOnGoal)) + strings.Count(line, string(charPlayerOnGoal))
 	}
 
-	if gridWidth > MaxGameSize || gridHeight > MaxGameSize {
-		return nil, fmt.Errorf("level size must be less than %dx%d", MaxGameSize, MaxGameSize)
+	if gridWidth > MaxGridSize || gridHeight > MaxGridSize {
+		return nil, fmt.Errorf("level size must be less than %dx%d", MaxGridSize, MaxGridSize)
 	}
 	if boxCount != goalCount {
 		return nil, fmt.Errorf("invalid level: box count and goal count must be the same")
@@ -210,25 +233,25 @@ func fillExterior(grid [][]byte, line, col, gridWidth, gridHeight int) {
 }
 
 // LoadLevel loads a level
-func LoadLevel(packageData PackageData, levelNum, maxWidth, maxHeight int, gameSpriteSheet *ec.SpriteSheet) (loader.EntityComponentList, error) {
+func LoadLevel(packageData PackageData, levelNum, layoutWidth, layoutHeight int, gameSpriteSheet *ec.SpriteSheet) (gutils.Vec2d[Tile], loader.EntityComponentList, error) {
 	componentList := loader.EntityComponentList{}
 
-	levelData := packageData.Levels[levelNum]
-	gridWidth := levelData.Width
-	gridHeight := levelData.Height
-	gridSize := gridWidth * gridHeight
-	grid := packageData.Blocks[levelData.Index : levelData.Index+gridSize]
+	grid := packageData.Levels[levelNum]
+	gridWidth := grid.NCols
+	gridHeight := grid.NRows
 
-	horizontalPadding := maxWidth - gridWidth
+	horizontalPadding := layoutWidth - gridWidth
 	horizontalPaddingBefore := horizontalPadding / 2
 	horizontalPaddingAfter := horizontalPadding - horizontalPaddingBefore
 
-	verticalPadding := maxHeight - gridHeight
+	verticalPadding := layoutHeight - gridHeight
 	verticalPaddingBefore := verticalPadding / 2
 	verticalPaddingAfter := verticalPadding - verticalPaddingBefore
 
+	tiles := make([]Tile, 0, gridWidth*gridHeight)
+
 	for iLine := 0; iLine < verticalPaddingBefore; iLine++ {
-		for iCol := 0; iCol < maxWidth; iCol++ {
+		for iCol := 0; iCol < layoutWidth; iCol++ {
 			createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 		}
 	}
@@ -241,47 +264,56 @@ func LoadLevel(packageData PackageData, levelNum, maxWidth, maxHeight int, gameS
 		}
 
 		for iGridCol := 0; iGridCol < gridWidth; iGridCol++ {
-			char := grid[iGridLine*gridWidth+iGridCol]
+			char := *grid.Get(iGridLine, iGridCol)
 			iCol := iGridCol + horizontalPaddingBefore
 
 			switch char {
 			case charFloor:
+				tiles = append(tiles, TileEmpty)
 				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			case charExterior:
+				tiles = append(tiles, TileEmpty)
 				createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			case charWall:
+				tiles = append(tiles, TileWall)
 				createWallEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			case charGoal:
+				tiles = append(tiles, TileGoal)
 				createGoalEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			case charBox:
+				tiles = append(tiles, TileBox)
 				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 				createBoxEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			case charPlayer:
+				tiles = append(tiles, TilePlayer)
 				createFloorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 				createPlayerEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			case charBoxOnGoal:
+				tiles = append(tiles, TileBox|TileGoal)
 				createGoalEntity(&componentList, gameSpriteSheet, iLine, iCol)
 				createBoxEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			case charPlayerOnGoal:
+				tiles = append(tiles, TilePlayer|TileGoal)
 				createGoalEntity(&componentList, gameSpriteSheet, iLine, iCol)
 				createPlayerEntity(&componentList, gameSpriteSheet, iLine, iCol)
 			default:
-				return loader.EntityComponentList{}, fmt.Errorf("invalid level: invalid char '%c'", char)
+				return gutils.Vec2d[Tile]{}, loader.EntityComponentList{}, fmt.Errorf("invalid level: invalid char '%c'", char)
 			}
 		}
 
-		for iCol := maxWidth - horizontalPaddingAfter; iCol < maxWidth; iCol++ {
+		for iCol := layoutWidth - horizontalPaddingAfter; iCol < layoutWidth; iCol++ {
 			createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 		}
 	}
 
-	for iLine := maxHeight - verticalPaddingAfter; iLine < maxHeight; iLine++ {
-		for iCol := 0; iCol < maxWidth; iCol++ {
+	for iLine := layoutHeight - verticalPaddingAfter; iLine < layoutHeight; iLine++ {
+		for iCol := 0; iCol < layoutWidth; iCol++ {
 			createExteriorEntity(&componentList, gameSpriteSheet, iLine, iCol)
 		}
 	}
 
-	return componentList, nil
+	gameGrid := utils.Try(gutils.NewVec2d(gridHeight, gridWidth, tiles))
+	return gameGrid, componentList, nil
 }
 
 func createFloorEntity(componentList *loader.EntityComponentList, gameSpriteSheet *ec.SpriteSheet, line, col int) {

@@ -17,6 +17,11 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
+const (
+	minGridWidth  = 30
+	minGridHeight = 20
+)
+
 // GameplayState is the main game state
 type GameplayState struct{}
 
@@ -27,7 +32,8 @@ func (st *GameplayState) OnStart(world w.World) {
 
 	// Load game
 	packageData := utils.Try(gloader.LoadPackage(packageName))
-	world.Resources.Game = &resources.Game{Package: packageData}
+	gridLayout := resources.GridLayout{Width: minGridWidth, Height: minGridHeight}
+	world.Resources.Game = &resources.Game{Package: packageData, GridLayout: gridLayout}
 
 	// Load last played level
 	levelNum := 0
@@ -66,6 +72,7 @@ func (st *GameplayState) Update(world w.World) states.Transition {
 	g.MoveSystem(world)
 	g.SaveSystem(world)
 	g.InfoSystem(world)
+	g.GridUpdateSystem(world)
 	g.GridTransformSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {

@@ -3,7 +3,6 @@ package systems
 import (
 	"fmt"
 
-	gc "github.com/x-hgg-x/sokoban-go/lib/components"
 	"github.com/x-hgg-x/sokoban-go/lib/resources"
 
 	ecs "github.com/x-hgg-x/goecs/v2"
@@ -13,20 +12,21 @@ import (
 
 // InfoSystem sets game info
 func InfoSystem(world w.World) {
-	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*resources.Game)
 
 	// Check the number of box on goal
-	boxSet := world.Manager.Join(gameComponents.Box, gameComponents.GridElement)
-	boxCount := boxSet.Size()
+	boxCount := 0
 	boxOnGoalCount := 0
 
-	boxSet.Visit(ecs.Visit(func(entity ecs.Entity) {
-		boxGridElement := gameComponents.GridElement.Get(entity).(*gc.GridElement)
-		if gameResources.Level.Grid[boxGridElement.Line][boxGridElement.Col].Goal != nil {
-			boxOnGoalCount++
+	for _, tile := range gameResources.Level.Grid.Data {
+		if tile.Contains(resources.TileBox) {
+			boxCount += 1
+
+			if tile.Contains(resources.TileGoal) {
+				boxOnGoalCount += 1
+			}
 		}
-	}))
+	}
 
 	// Set text info
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
