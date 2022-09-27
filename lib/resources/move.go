@@ -75,6 +75,10 @@ func Move(world w.World, movements ...MovementType) {
 		oneFrontTile.Set(TilePlayer)
 		playerTile.Remove(TilePlayer)
 
+		playerTile = oneFrontTile
+		playerLine += directionLine
+		playerCol += directionCol
+
 		gameResources.Level.Movements = append(gameResources.Level.Movements, movement)
 		gameResources.Level.Modified = true
 	}
