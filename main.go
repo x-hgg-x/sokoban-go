@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image/color"
 	_ "image/png"
 
 	gc "github.com/x-hgg-x/sokoban-go/lib/components"
@@ -8,6 +9,7 @@ import (
 	gr "github.com/x-hgg-x/sokoban-go/lib/resources"
 	gs "github.com/x-hgg-x/sokoban-go/lib/states"
 
+	ec "github.com/x-hgg-x/goecsengine/components"
 	"github.com/x-hgg-x/goecsengine/loader"
 	er "github.com/x-hgg-x/goecsengine/resources"
 	es "github.com/x-hgg-x/goecsengine/states"
@@ -20,6 +22,10 @@ import (
 const (
 	minGameWidth  = 960
 	minGameHeight = 680
+
+	offsetX       = 0
+	offsetY       = 40
+	gridBlockSize = 32
 )
 
 type mainGame struct {
@@ -28,7 +34,20 @@ type mainGame struct {
 }
 
 func (game *mainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
-	return minGameWidth, minGameHeight
+	resources := game.world.Resources
+	gridLayout := &resources.Game.(*gr.Game).GridLayout
+
+	gameWidth := gridLayout.Width*gridBlockSize + offsetX
+	gameHeight := gridLayout.Height*gridBlockSize + offsetY
+
+	resources.ScreenDimensions.Width = gameWidth
+	resources.ScreenDimensions.Height = gameHeight
+
+	fadeOutSprite := &(*resources.SpriteSheets)["fadeOut"].Sprites[0]
+	fadeOutSprite.Width = gameWidth
+	fadeOutSprite.Height = gameHeight
+
+	return gameWidth, gameHeight
 }
 
 func (game *mainGame) Update() error {
@@ -60,6 +79,11 @@ func main() {
 
 	// Load sprite sheets
 	spriteSheets := loader.LoadSpriteSheets("assets/metadata/spritesheets/spritesheets.toml")
+
+	textureImage := ebiten.NewImage(minGameWidth, minGameHeight)
+	textureImage.Fill(color.RGBA{A: 120})
+	spriteSheets["fadeOut"] = ec.SpriteSheet{Texture: ec.Texture{Image: textureImage}, Sprites: []ec.Sprite{{Width: minGameWidth, Height: minGameHeight}}}
+
 	world.Resources.SpriteSheets = &spriteSheets
 
 	// Load fonts

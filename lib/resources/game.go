@@ -4,12 +4,18 @@ import (
 	"fmt"
 
 	gloader "github.com/x-hgg-x/sokoban-go/lib/loader"
+	"github.com/x-hgg-x/sokoban-go/lib/math"
 	gutils "github.com/x-hgg-x/sokoban-go/lib/utils"
 
 	ec "github.com/x-hgg-x/goecsengine/components"
 	"github.com/x-hgg-x/goecsengine/loader"
 	"github.com/x-hgg-x/goecsengine/utils"
 	w "github.com/x-hgg-x/goecsengine/world"
+)
+
+const (
+	minGridWidth  = 30
+	minGridHeight = 20
 )
 
 // StateEvent is an event for game progression
@@ -84,9 +90,8 @@ type Level struct {
 
 // GridLayout is the grid layout
 type GridLayout struct {
-	Width    int
-	Height   int
-	Modified bool
+	Width  int
+	Height int
 }
 
 // Game contains game resources
@@ -105,19 +110,21 @@ func InitLevel(world w.World, levelNum int) {
 	prefabs := world.Resources.Prefabs.(*Prefabs)
 	loader.AddEntities(world, prefabs.Game.BoxInfo)
 	loader.AddEntities(world, prefabs.Game.StepInfo)
-	levelInfoEntity := loader.AddEntities(world, prefabs.Game.LevelInfo)
+	levelInfoEntity := loader.AddEntities(world, prefabs.Game.LevelInfo)[0]
 
 	// Load level
+	level := gameResources.Package.Levels[levelNum]
+	gridLayout := &gameResources.GridLayout
+	gridLayout.Width = math.Max(minGridWidth, level.NCols)
+	gridLayout.Height = math.Max(minGridHeight, level.NRows)
+
 	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
-	gridLayout := gameResources.GridLayout
 	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, levelNum, gridLayout.Width, gridLayout.Height, &gameSpriteSheet))
 	loader.AddEntities(world, levelComponentList)
 	gameResources.Level = Level{CurrentNum: levelNum, Grid: grid}
 
 	// Set level info text
-	for iEntity := range levelInfoEntity {
-		world.Components.Engine.Text.Get(levelInfoEntity[iEntity]).(*ec.Text).Text = fmt.Sprintf("LEVEL %d/%d", levelNum+1, len(gameResources.Package.Levels))
-	}
+	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("LEVEL %d/%d", levelNum+1, len(gameResources.Package.Levels))
 
 	LoadSave(world)
 }

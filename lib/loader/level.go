@@ -18,7 +18,7 @@ import (
 )
 
 // MaxGridSize is the maximum grid size
-const MaxGridSize = 100
+const MaxGridSize = 50
 
 const (
 	exteriorSpriteNumber = 0

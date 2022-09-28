@@ -17,11 +17,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-const (
-	minGridWidth  = 30
-	minGridHeight = 20
-)
-
 // GameplayState is the main game state
 type GameplayState struct{}
 
@@ -32,8 +27,7 @@ func (st *GameplayState) OnStart(world w.World) {
 
 	// Load game
 	packageData := utils.Try(gloader.LoadPackage(packageName))
-	gridLayout := resources.GridLayout{Width: minGridWidth, Height: minGridHeight}
-	world.Resources.Game = &resources.Game{Package: packageData, GridLayout: gridLayout}
+	world.Resources.Game = &resources.Game{Package: packageData}
 
 	// Load last played level
 	levelNum := 0

@@ -2,6 +2,7 @@ package states
 
 import (
 	"github.com/x-hgg-x/sokoban-go/lib/resources"
+	g "github.com/x-hgg-x/sokoban-go/lib/systems"
 
 	"github.com/x-hgg-x/goecsengine/loader"
 	"github.com/x-hgg-x/goecsengine/states"
@@ -16,6 +17,10 @@ type LevelCompleteState struct{}
 
 // OnStart method
 func (st *LevelCompleteState) OnStart(world w.World) {
+	gameResources := world.Resources.Game.(*resources.Game)
+	gameResources.Level.Movements = []resources.MovementType{}
+	gameResources.Level.Modified = true
+
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
 	loader.AddEntities(world, prefabs.Menu.LevelCompleteMenu)
 }
@@ -27,20 +32,21 @@ func (st *LevelCompleteState) OnPause(world w.World) {}
 func (st *LevelCompleteState) OnResume(world w.World) {}
 
 // OnStop method
-func (st *LevelCompleteState) OnStop(world w.World) {
-	gameResources := world.Resources.Game.(*resources.Game)
-
-	world.Manager.DeleteAllEntities()
-	gameResources.Level.Movements = []resources.MovementType{}
-	gameResources.Level.Modified = true
-	resources.SaveLevel(world)
-	resources.InitLevel(world, gameResources.Level.CurrentNum)
-}
+func (st *LevelCompleteState) OnStop(world w.World) {}
 
 // Update method
 func (st *LevelCompleteState) Update(world w.World) states.Transition {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
-		return states.Transition{Type: states.TransPop}
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		return states.Transition{Type: states.TransQuit}
 	}
-	return states.Transition{}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+		world.Resources.InputHandler.Actions[resources.RestartAction] = true
+	}
+
+	if g.SwitchLevelSystem(world) {
+		return states.Transition{Type: states.TransPop}
+	} else {
+		return states.Transition{}
+	}
 }

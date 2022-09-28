@@ -7,7 +7,7 @@ import (
 )
 
 // SwitchLevelSystem switches between levels
-func SwitchLevelSystem(world w.World) {
+func SwitchLevelSystem(world w.World) bool {
 	gameResources := world.Resources.Game.(*resources.Game)
 
 	previousLevelAction := world.Resources.InputHandler.Actions[resources.PreviousLevelAction]
@@ -27,10 +27,12 @@ func SwitchLevelSystem(world w.World) {
 		gameResources.Level.Modified = true
 		newLevel = gameResources.Level.CurrentNum
 	default:
-		return
+		return false
 	}
 
 	world.Manager.DeleteAllEntities()
 	resources.SaveLevel(world)
 	resources.InitLevel(world, newLevel)
+
+	return true
 }
