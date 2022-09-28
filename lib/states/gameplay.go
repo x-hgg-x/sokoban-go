@@ -23,7 +23,7 @@ type GameplayState struct{}
 // OnStart method
 func (st *GameplayState) OnStart(world w.World) {
 	// Define package name
-	packageName := "xsokoban"
+	packageName := "XSokoban"
 
 	// Load game
 	packageData := utils.Try(gloader.LoadPackage(packageName))

@@ -88,7 +88,7 @@ func LoadPackage(packageName string) (packageData PackageData, packageErr error)
 	packageData.Name = packageName
 
 	// Load file
-	file := utils.Try(os.Open(fmt.Sprintf("levels/%s/levels.txt", packageName)))
+	file := utils.Try(os.Open(fmt.Sprintf("levels/%s.xsb", packageName)))
 	defer file.Close()
 
 	lines := []string{}

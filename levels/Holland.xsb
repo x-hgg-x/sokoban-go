@@ -1,0 +1,1312 @@
+The David Holland collection is a combined collection made up of these collections:  (and in this order)
+
+dh1       (10 levels)
+dh2       (10 levels)
+bagatelle (20 levels)
+cantrip   (20 levels)
+maelstrom (21 levels)
+
+All levels are created and owned by David Holland unless noted otherwise.
+
+;---------------------------------------------------------------------
+
+;The dh1 collection of Sokoban positions is copyright David Holland <david@clickfest88.freeserve.co.uk>
+;These levels may be distributed freely as long as this copyright message is retained.
+
+;dh-101.xsb
+       ##
+     ##  ###
+   ## $ $   #
+  #   #..#$ #
+  # $$#*.#  #
+  #   ....$ #
+  # # .#.#  #
+ # $##$#.#$ #
+ # @$    .$ #
+  #  #  ##  #
+   #####  ##
+Title:Spade
+Author:D Holland
+
+;dh-102.xsb
+    ####
+####   #
+#@$  # #
+# $$$  #
+##.#.  #
+#  ..# #
+#  #.* #
+# $.$ #
+ ##   #
+ ######
+Title:ninevah
+Author:D Holland + sokgen
+
+;dh-103.xsb
+    ###
+   #  @###
+  #  #$$  #
+ ##.#   # #
+#  $#.#$  #
+#   ...  #
+ ##$#.#$ #
+  #     #
+   ##   #
+     ####
+Title:CrissCross
+Author:D Holland + sokgen
+
+;dh-104.xsb
+    ##    ###
+####  ####   #
+# $  $     $ ###
+# #   # ### #   #
+#  $   $ # $$ $ #
+ ##  ## $@$     #
+  #$ ##  # $$ $$ #
+  #    $  ## ##  #
+ ### #$##  ...# #
+ #  ..*.*..##.# #
+ # #..*.....*.# #
+ #   ########   #
+  ###        ###
+Title:Carousel
+Author:D Holland
+
+;dh-105.xsb
+   ##
+  #  #
+  #  #  #####
+  #  # #..   #
+  # ####..##$##
+  #  $ $.*     #
+  # #$ #*.# $# #
+ ##$#  #..#  # #
+#   #$ #*.# $# #
+# # #  $..#  # #
+# #$#$ #..$  #  #
+#   #  #..#   # #
+# #@# $#*.#$# # #
+#  $#  #..#   # #
+ #   $ $ $ ###  #
+  ###   #      #
+     ### ######
+Title:Pattern-oster
+Author:D Holland
+
+;dh-106.xsb
+ ### ####
+#   ##   # ###
+# $   $ $ #   #
+# $ #  .$ #   #
+ ##  ##.#  $ #
+# ##$##.###. #
+#   *.......$#
+#    ##.##   #
+##$####.#####
+#  $ # . #   #
+#  #  **$    #
+#  $ # @ # $ #
+# $   ### #  #
+ ##   #   ###
+   ###
+Title:Saturnine
+Author:D Holland
+
+;dh-107.xsb
+   ###
+###   #
+# $*@.###
+# # *$  #
+# #. .# #
+# #$* $ #
+#    .###
+###   #
+   ###
+Title:briefcase alt 23
+Author:D Holland + sokgen
+
+;dh-108.xsb
+       ###
+##### #   ###
+#   ## $ $  #
+# # ##    # #
+# #..$ $ ## #
+#  .$# $#   #
+###..# $ @$ #
+  #**# $ # ##
+  #..#   # #
+  #..##### ##
+  #.*#   $  #
+  #..# $    #
+  ##.### #####
+  # $      $ #
+  #   ####   #
+  #####  #####
+Title:Salamandar v3
+Author:D Holland
+
+;dh-109.xsb
+  ####
+ #    #
+ #. * #
+# . $  #
+# #**# #
+#  *+* #
+ # $$ #
+ #    #
+  ####
+Title:Abstract
+Author:D Holland
+
+;dh-110.xsb
+ ##
+#  ######
+#        #
+#  ###$# #
+ #.# # . #
+ # # #$* #
+ #.### + #
+ # $ #$* #
+ # #   . #
+ #.####* #
+#  $ $ * #
+#       ##
+ ########
+Title:Storm (in a teacup) v6
+Author:D Holland
+
+
+The dh2 collection of Sokoban positions is copyright David Holland <david@noether.freeserve.co.uk>
+These levels may be distributed freely as long as this copyright message is retained.
+
+;dh201.xsb
+      #####
+     #     #
+    #  # #  #
+   #  #   #  #
+   # #  *  # #
+  #  # * * #  #
+ #  ##$.#.$##  #
+#  # $  #  $ #  #
+# # *  *.* .* # #
+#  $ ##. .## $  #
+# # *. *.*  * # #
+#  # $  #  $ #  #
+ #  ##$.#.$##  #
+  #  # * * #  #
+   # #  *  # #
+   #  # @ #  #
+    #  # #  #
+     #     #
+      #####
+Author: D Holland
+Title: Egg
+
+;dh202.xsb
+      #####
+      #   #
+####### # #
+#    $ $ $#
+# # ..... #
+#  $.$$$.$#
+### .@# . #
+  #$.$$$.$##
+  # .....  #
+  #$ $ $   #
+  # # ######
+  #   #
+  #####
+Author: D Holland
+Title: Square version 3
+
+;dh203.xsb
+ #### ####
+##  ###  ##
+#    #  . #
+#   * *   #
+## * $ * ##
+ ## *@* ##
+## * * * ##
+#   * *   #
+#    #    #
+##  ###  ##
+ #### ####
+Author: D Holland
+Title: clover version 4
+
+;dh204.xsb
+          ####
+       ####  ######
+       #  # .##   #
+       #  $  #  # #
+ #######.*.**#$## #
+ #        #     # ##
+## ##$##### $  $#  #
+#  # . *  ####  ## #
+# ##$* *$ #   #  # #
+# #  .....$@$    # #
+# #   ##  ######## #
+# ##  ##  #        #
+#  ######## ########
+##          #
+ ############
+Author: D Holland
+Title: prefab #5
+
+;dh205.xsb
+ #####   #####
+ #   #####   #
+##     *     ##
+# **##$.$##** #
+#  . # * # .  #
+# ** #$.$# ** #
+##   # . #   ##
+ ### ## ## ###
+  #  ## ##  #
+  #    $    #
+  #### @ ####
+     #####
+Author: D Holland
+Title: Figure eight
+
+;dh206.xsb
+         #####
+      ####   #
+   ####    # #
+####  $ # $  ##
+#   .#.$.$.$. #
+# # $.$.$.$.# #
+#  $.$.$.#.$.$##
+##  $.#.$.$.$  #
+ # #.$.$ $.$.# #
+ #  $.$.$.#.$  ##
+ ##$.$.#.$.$.$  #
+  # #.$.$.$.$ # #
+  # .$.$.$.#.   #
+  ##  $ # $  ####
+   # #  @ ####
+   #   ####
+   #####
+Author: D Holland
+Title: Skewsymmetric pattern #6
+
+;dh207.xsb
+###############
+#   #     #   #
+#  . * *@*  . #
+##$##  *$ ##$##
+#    #   # $  #
+#  #*#####.#  #
+# $* #   # .$ #
+##   #*.$#   ##
+ ###     * ###
+ #  . * * $. #
+ # ## ###.## #
+ #    # #    #
+ ###### ######
+Author: D Holland
+Title: Butterfly #3
+
+;dh208.xsb
+ ##### #####
+##   ###   ######
+#  #  ##      $ ##
+# $$   ##*###  $ ##
+#  # $ #...  #  $ ##
+# $# # # *$# ##  $ #
+#    $ #...#   #$  #
+##  #####.## $    ##
+# .#...##.### ##  #
+# *.*....*.. $#####
+# .#. .##.### #####
+## # ####.#       #
+## $  ###*#$#$$ $ #
+#  ##   $@$    ## #
+# $ $ #$### # $   #
+#     #     ##    #
+###################
+Author:  D Holland
+Title: Crossed Swords version 10
+
+;dh209.xsb
+#########
+#   #   ####
+#    * ..$ #
+###$## # $ ##
+  #  $  #  @##
+  ##   .###  ###
+   ####    # $ #
+      #$.#*    #
+     ## * . ####
+     # $.*.##
+     #     #
+     #######
+Author: D Holland
+Title: interlocked goals
+
+;dh210.xsb
+ ############
+### .*.*.$  ##
+#   * $ * $  ##
+#  $.$.*.*.$  #
+# $ * *@* * $ #
+#  $.*.*.$.$  #
+##  $ * $ *   #
+ ##  $.*.*. ###
+  ###########
+Author: D Holland
+Title: Meshed Squares
+
+
+
+; The bagatelle collection
+
+; Copyright: David Holland
+; Email: david@clickfest88.freeserve.co.uk
+; Web Site: http://www.clickfest88.freeserve.co.uk
+;
+;
+; Bagatelle is a French word for a trinket, from the
+; Italian for a conjuror's trick. The collection contains
+; fairly simple puzzles (of less difficulty than my
+; previous collection maelstrom) of various sizes.
+; Some of the small puzzles are easier versions of
+; puzzles in my other collections. Others are my
+; take on some classical Sokoban themes (goals in
+; a line, in a cross shape, objects outside goal
+; room for tricky start and finish). The problems
+; posed by each puzzle are of a fairly straightforward
+; kind, but are nevertheless quite varied. The
+; puzzles are in roughly ascending order of difficulty.
+;
+
+;1
+   ####
+   #  #
+####$.######
+#   $.$ #  #
+# $  +     #
+####$*###* #
+#### .### ##
+#   #.  # #
+#       # #
+#### #  # ##
+   # ####  #
+   #       #
+   #  ######
+   ####
+Title: small2
+
+;2
+   ########   #####
+  ##   #  #####   #
+ ##    #  $       #
+ #  # ##   ##### ###
+##. . .## ##  $    #
+#   #      #@ $  # #
+#   ..####  ####$# #
+######## ## $      #
+          #####   ##
+              #####
+Title: two piece7
+
+;3
+#############
+#     #     #
+# *.*$#$*.* #
+# .$. @..$. #
+# *.* # *.* #
+# $ $ # $.$ #
+### ##### ###
+# $.$ # $.$ #
+# *.* # $.$ #
+# .$.. ..$  #
+# *.*$#$$ $ #
+#     #     #
+#############
+Title: four block1
+
+;4
+####
+#  #######
+# $$ $ $ ##
+#  $@$ #  #
+## #*#  # #
+#  *.   # #
+# $#.#. # #
+#   .. #  #
+### *..  ##
+  ########
+Title: small cross9
+
+;5
+###################
+##               ##
+ ##  $ $.$.$ $  ##
+  ##  $.$.$.$  ##
+   ## .$.$.$. ##
+    ## .$.$. ##
+     ## .$. ##
+      ## . ##
+       ##@##
+      ## . ##
+     ## .$. ##
+    ## .$.$. ##
+   ## .$.$.$. ##
+  ##  $.$.$.$  ##
+ ##  $ $.$.$ $  ##
+##               ##
+###################
+Title: bowtie3
+
+;6
+     #######
+     #     #
+    ##.*$# #
+    #  ..$ #
+#####$# $###
+# $   # .#
+# #* *  $#
+#@ .. #  #
+###   ####
+  #####
+Title: teapot3
+
+;7
+  #########
+ ##   #   ##
+##  # # #  ##
+#  # $.$ #  #
+# #  * .  # #
+#   .#*# $  #
+###.$#@#$.###
+#  $.###.$  #
+# #  . . .# #
+#  #  $  #  #
+##  #$#$#  ##
+ ##   #   ##
+  #########
+Title: boxin10
+
+;8
+####
+#  #####
+# $#...###
+#    $$$ #####
+# $#.*.  .#  #
+#@ # $ .*.#$ #
+##### $$$    #
+    ## ...#$ #
+     ######  #
+          ####
+Title: slinky5
+
+;9
+        ####
+   ######  #####
+#### .. $$ #   #
+#    *$ #    $ #
+#  # .## .## ###
+## #*.##$### #
+ #     @     #
+## ###$##.*# ##
+#  ##. ##. #  #
+#     # $* $  #
+#  # $$ .. ####
+####  ######
+   ####
+Title: fizzgig1
+
+;10
+ ####
+ #  #######
+ #   $@#  #
+ # #.#$   #
+ # #* .#$ #
+## #. *  ##
+#  .#$# ##
+#       #
+####   ##
+   #####
+Title: diode1
+
+;11
+        ######
+    #####    ####
+ #### $  $##   @###
+## $  $ # $ ### $ ##
+#  $ #$## # ### $  #
+# #$.............. #
+#  $ ### #$####   ##
+##   # $  $ # ##  #
+ #####      #  ####
+     ########
+Title: line7
+
+;12
+#####
+#   #####
+#       #
+##$# .$ #
+#. * #$##
+#.$.$  #
+#.$.. ##
+#$ ####
+#@ #
+####
+Title: handsaw1
+
+;13
+#################
+#    ....    #  #
+# #.  $@$.**.   #
+# #. * #$#   #$ #
+#   #. #  ####  #
+#####$##      $ #
+    #  ## ####  #
+    ## $ $ # ####
+     #  $  #
+     ##    #
+      ######
+Title: raygun1
+
+;14
+########
+#      ##
+# @ # . #
+# $ $.$ #
+##.#$#$##
+#  . .  #
+# *$# . #
+##     ##
+ #######
+Title: seesaw8
+
+;15
+ ########
+ #   #  #
+## #$# $#
+#       #
+#  #*# $##
+#  ..*   #
+####.### #
+#  ..* $ #
+#@ #.#  ##
+# $    $#
+#  ###  #
+#### ####
+Title: tree12
+
+;16
+####  ####
+#  ####  #
+# .    . #
+#  ####$ #
+## #    ##
+## .$*# ##
+# *#$ #  #
+#@$    . #
+#  ####  #
+####  ####
+Title: torch1
+
+;17
+  #########
+  #@   #  ####
+  # $  # $$  #
+  #  $ $  #  #
+  ##$ #.#   ####
+  ## ##.###    #
+  #  *......#  #
+  #  ##.##### ###
+#### ##.##  # $ #
+#    $   #$   # #
+# #  ##  $  #   #
+# ########  #####
+#        # ##
+########   #
+       #####
+Title: cross7
+
+;18
+   ####
+ ###  #
+ #@$. ##
+ #$* . #
+##  .  #
+# $*$* #
+#   . ##
+###  ##
+  ####
+Title: moebius1
+
+;19
+     #####
+  ####   #
+  #  # $ #
+  #. .@*######
+ ##..*.. #   #
+##  #*#    # #
+#  ##.# $$#  #
+# # $.    # ##
+#   ## # $   #
+###### $ $ $ #
+     #  ######
+     ####
+Title: fork7
+
+;20
+########
+#  #   #
+#  * . #
+# .$*$ #
+## * . #
+# *$*  #
+# @ #  #
+########
+Title: shuffle2
+
+; The cantrip collection
+
+; Copyright: David Holland
+; Email: david@clickfest88.freeserve.co.uk
+; Web Site: http://www.clickfest88.freeserve.co.uk
+;
+;
+; Author's note: The puzzles are all small (between 6 and 9
+; goals and pretty cramped), with maze and walls designed
+; by me and computer-generated start positions. Because of
+; the computer involvement, the start positions of the puzzles
+; may look abstract or random. The meat of the puzzles is in
+; the variations, the unexpected twists, and the underlying
+; problems. The human element of design is most evident in
+; the solved position, by construction, and I like to think
+; of the solving process as producing order from chaos. This
+; collection is meant for experienced solvers, or at least
+; determined ones, as it contains probably my toughest
+; puzzles so far. As usual I have tried to put the puzzles
+; in rough ascending order of difficulty, but here this is
+; even more approximate than usual as I find the puzzles
+; difficult to compare. The puzzles have been extensively
+; play-tested. On a good day I can actually solve them...
+;
+
+;1
+   #####
+ ###   ###
+ # $ # * #
+## $*.*  #
+#  *   . #
+#@  ###  #
+##### ####
+Title: loom1
+
+;2
+ ####
+ #  ######
+ #   $@$ #
+ # **##. #
+##$.$  . #
+#  .# .*##
+#    $  #
+######  #
+     ####
+Title: pinwheel3
+
+;3
+##########
+#@ *.##  #
+# $   $  #
+###*..#  #
+  #  $  ##
+  # .#. #
+  # $ $ #
+  ####  #
+     ####
+Title: fretsaw1
+
+;4
+#####
+#   #####
+# # $ $ #
+# $$. *@#
+# #  ** #
+# ### *##
+#  # .* #
+##  . . #
+ ##     #
+  #######
+Title: canine4
+
+;5
+     ####
+ #####  #
+## $  $ #
+#@$.#.* ##
+# $.$ .  #
+##$.*#.  #
+ #      ##
+ #  ######
+ ####
+Title: notchwheel1
+
+;6
+  ####
+###  #####
+#  .$  . ##
+# $*@#$*  #
+## .$* .  #
+ ### #  ###
+   #   ##
+   #####
+Title: quarkspin3
+
+;7
+##########
+#   #    #
+# #$. .# #
+#@#. * # #
+# # * .# #
+# #*$*$# #
+# $      #
+####  ####
+   ####
+Title: osmosis1
+
+;8
+ #####
+##   #####
+#  # $@$ #
+# #..#*  #
+#  .   . #
+## $.#.* #
+ # $ $$# #
+ #####   #
+     #####
+Title: catkins5
+
+;9
+ #######
+##  #  ##
+#     $ #
+# ** **@#
+# * # * #
+##  .  ##
+ #  .$##
+ ##   #
+  #####
+Title: splittee1
+
+;10
+  ########
+  #   #  #
+ ##$#   .##
+## .* #   #
+#  .* *$# #
+#   . #@$ #
+#  # ##$###
+####    #
+   ######
+Title: flagon1
+
+;11
+    #####
+  ###   #
+###..$. #
+# $ $.$##
+# #$. * #
+#  . *$ #
+##   # @#
+ ########
+Title: shuffle1
+
+;12
+#####
+#   ####
+# #$   ###
+# #.*$*  #
+# # .* # #
+#  . $.#@#
+###  $ # #
+  ####   #
+     #####
+Title: bigt2
+
+;13
+  #####
+###   ###
+# $ #$  #
+# ....* #
+#  *. $ #
+## # # ##
+ # $$* #
+ ## @ ##
+  #####
+Title: gyroscope2
+
+;14
+ ####
+##  ####
+# $  $ #
+# $... ##
+#@*$$$* #
+## ...  #
+ ##   ###
+  #####
+Title: moebius2
+
+;15
+  ####
+###  #
+#@$ .#####
+# *$ $ $ #
+## * * . #
+ # . . ###
+ # . ###
+ ## $#
+  #  #
+  ####
+Title: boomerang5
+
+;16
+      #####
+ ######   #
+ #   # $  #
+##  $..#$ #
+#  #**.   #
+#@# *.*#  #
+#   ##   ##
+### $  ###
+  ###  #
+    ####
+Title: clasp1
+
+;17
+####   ####
+#  #####  #
+#    $@$  #
+# *.$#*.* #
+## . # . ##
+ # . #$. #
+ ## $$  ##
+  #  #  #
+  #######
+Title: heart4
+
+;18
+    ####
+#####  ##
+#   $ $ ##
+#   #.$. #
+##  **.#@#
+ #   . $ #
+ #####  ##
+     ####
+Title: cossack2
+
+;19
+   #####
+ ###   #
+## .$.$#
+#  .** ##
+# * . * #
+##   $$ #
+ #  ## @#
+ ########
+Title: space invader1
+
+;20
+ #####
+ #   #####
+ #     $@#
+ ## ##.#*###
+### # $  $ #
+# $ .$. .# #
+#   $ ##$# #
+###.#.  .  #
+  #   ######
+  #####
+Title: bola1
+
+
+; The maelstrom collection
+
+; Copyright: David Holland
+; Email: david@clickfest88.freeserve.co.uk
+; Web Site: http://www.clickfest88.freeserve.co.uk
+;
+;
+; Author's note: The collection ranges from the pretty small
+; (5 objects, 8x9 squares) through the mid-sized (13 objects,
+; 15x11 squares) right up to the large (one puzzle with 57
+; objects 23x24 squares). Just browse for the kind of challenge
+; you like. The puzzles are in rough order of difficulty. I
+; designed the maze layout and goals for all the puzzles,
+; and many but not all of the small puzzles use computer-generated
+; start positions. A few of the puzzles feature unexpected twists
+; within lengthy solutions and require substantial imagination,
+; and the others I hope are at least interesting. A fully-featured
+; Sokoban player (with drag and drop movement of objects,
+; mouse movement of the man, ability to keep your place if
+; you quit and return to the puzzle another time) is strongly
+; recommended for the medium to larger puzzles, though not
+; strictly necessary.
+;
+;
+
+;maelst01.xsb
+ #######
+ #     ###
+ # .* .  #
+ #.## #$$#
+##*#.    ##
+# $ . .#  #
+# . ##$   #
+###$ $@$ ##
+  #   ####
+  #####
+Title: Maelstrom Collection #1
+Author: David Holland
+
+;maelst02.xsb
+    #########
+    #   #   #
+    #  . $. #
+    ##$### ##
+#####   #   #####
+#  ##$.*$..$##  #
+#     . # .  $  #
+# $#  $ # $  #. #
+## ##.#####.## ##
+# .# $  #  $ #$ #
+#  $  .$#$.   . #
+#  ##$..@..$##  #
+#####   #   #####
+    ## ###$##
+    #  $ .  #
+    #   #   #
+    #########
+Title: Maelstrom Collection #2
+Author: David Holland
+
+;maelst03.xsb
+#### ######
+#  ###    #
+#  #   ...#
+#  #  #...#
+## ##$ #  #
+ # $   #  #
+##@$## # ##
+# $$      #
+#  $ ## $ #
+## #$####$###
+#...*.  $ $ #
+#  .  #     #
+#############
+Title: Maelstrom Collection #3
+Author: David Holland
+
+;maelst04.xsb
+ ###########
+ #         ####
+## #######    #####
+# $#  #  ####     ##
+#    $$ .#  # $$$  #
+#  #  # *#.$  $  # #
+##  #  #.#.#  #$   #
+#  $#.*....## $   ##
+#  $  #....@# $ ###
+## $$$#.... # ###
+###   #######  #
+  ##         $ #
+   ##########  #
+            ####
+Title: Maelstrom Collection #4
+Author: David Holland
+
+;maelst05.xsb
+        ####
+  #######  #
+  #       $#
+  # *####. #
+  # .   #.$#
+####$#$.#. ####
+#  $ #  $     #
+# ##.#  ####* #
+# # .#### @   #
+# #  $     #  #
+#    ##    ####
+############
+Title: Maelstrom Collection #5
+Author: David Holland
+
+;maelst06.xsb
+   #######
+ ###  #  ##
+## $    $@#
+# $ $ #.# #
+# ## #..# #
+# #   . # #
+# #   *.$ #
+# ## ######
+#    #
+######
+Title: Maelstrom Collection #6
+Author: David Holland
+
+;maelst07.xsb
+#################
+#     #   #     #
+# .$.$. .  $.$. #
+## *#$## ##$#. ##
+ #      $.#  $ #
+ ## ###*.*# # ##
+ #  #.* $ * #  #
+ # * $.$@$.$ * #
+ #  # * $ *.#  #
+ ## # #*.*### ##
+ # $  #.$      #
+## .#$## ##$#* ##
+# .$.$  . .$.$. #
+#     #   #     #
+#################
+Title: Maelstrom Collection #7
+Author: David Holland
+
+;maelst08.xsb
+       ####
+ #######  #
+ #  ##  $ ##
+ # $    $  #
+ # ###$#$# ####
+## ##  .$..#  #
+#   #  .$.    #
+# $  # #####$ #
+##$  #$...    #
+ #@. .$..* ####
+ ###########
+Title: Maelstrom Collection #8
+Author: David Holland
+
+;maelst09.xsb
+########
+#      ##
+#  # ** #
+#   $ . #
+##$#$#.##
+#  *@$. #
+# . #.$ #
+##     ##
+ #######
+Title: Maelstrom Collection #9
+Author: David Holland
+
+;maelst09 variant (Aymeric du Peloux)
+########
+#      ##
+#  # ** #
+#   $   #
+##*#*# ##
+#  *@*  #
+#   #.* #
+##     ##
+ #######
+Title: Maelstrom Collection #9 variant
+Author: Aymeric du Peloux<aymeric.dupeloux@smile.fr>
+
+;maelst10.xsb
+          ####
+###########  #
+#   #   # $  #
+#  $   $ $ $ #
+##$ #*## ## ##
+ # $#.*.*.*  #
+ ##  ..*..#  #
+ # $#*+*.*#$ #
+ #  #..*..  ##
+ #  *.*.*.#$ #
+ ## ## ##*# $##
+ # $ $ $   $  #
+ #  $ #   #   #
+ #  ###########
+ ####
+Title: Maelstrom Collection #10
+Author: David Holland
+
+;maelst11.xsb
+  ####
+  #@ #####
+###$$*   #
+# * $ *# #
+# #. $ . #
+#   .. ###
+#####  #
+    ####
+Title: Maelstrom Collection #11
+Author: David Holland
+
+;maelst12.xsb
+     ####
+     #  #
+     # $######
+     #  #    #
+     #.$#$## ##########
+     #.   ..   $      #
+     #.$#$**$#   #$#$ #
+######  # .. #$ $ $  ##
+#      ##$..$#   $   #
+# ####### .. ######$###
+#   $ $ $$.#$$ $ $    #
+# #...*...$..*....*.# #
+# #...*.#....#..*.*.# #
+# # $ $ $ **$$ $  $ # #
+# ####### #. ######## #
+# #     #$*.$##       #
+# #@$ $ # .. #  #######
+# ####$ #$..$#$.#
+#  $ $    ##   .#
+# $    $#    #$.#
+######  ######  #
+     ####    #$ #
+             #  #
+             ####
+Title: Maelstrom Collection #12
+Author: David Holland
+
+;maelst13.xsb
+  #####
+  #  @###
+### #$  #
+# $* .  #
+# . .*# #
+## ## $ #
+ #    ###
+ ######
+Title: Maelstrom Collection #13
+Author: David Holland
+
+;maelst14.xsb
+###################
+#      #          #
+# $ $    @$ $ $ $ #
+###$#  $#.#$  #$###
+  #  #  #.#  #  #
+  ##  ###.###  ##
+   ##  ##.##  ##
+    ##.. . ..##
+    ##..$.$..##
+   ##  ##.##  ##
+  ##  ###.###  ##
+  #  #  #.#  #  #
+###$#  $#.#$  #$###
+# $ $    ..   $ $ #
+#      #   #      #
+###################
+Title: Maelstrom Collection #14
+Author: David Holland
+
+;maelst15.xsb
+ #######  #### ####
+ #  #  #  #  ###  #
+ # $$  #### $ $   #
+ #  #$ #  # $  $  #
+ ## #@    #   ## ##
+  # #$ #$ #   $  #
+  # #  # ## $ #  #
+ ## #### ####$####
+ #   $ # #     #
+ #  # .* ..$#  #
+### # .  $. # ##
+# .* ##   ##  * #
+# ..* ##### $.. #
+##...$     ..*. #
+ #  .###### ## ##
+ ######   #    #
+          ######
+Title: Maelstrom Collection #15
+Author: David Holland
+
+;maelst16.xsb
+    ####
+ ####  #
+ #  #  ##
+ #  *.  ###
+ # .*.#   #
+###$.$$ # #
+#@$...##  #
+# #$# $  ##
+#   #  ###
+#### $ #
+   #   #
+   #####
+Title: Maelstrom Collection #16
+Author: David Holland
+
+;maelst17.xsb
+    ####
+   ##  ########
+  ##   $  #   #
+  #   $ .  .  #
+### # $ *#$#$##
+# $ ####  ... #
+# # #   #$##  #
+# #.# *   #  ###
+# .* # * *  #  #
+##$ .#$.$.#.@  #
+#  #. .$. #$** #
+#  *.###  # . ##
+# $$ $ #### . #
+##   #    #*$$#
+ ##    ##     #
+  #############
+Title: Maelstrom Collection #17
+Author: David Holland
+
+;maelst18.xsb
+   ####
+####  ####
+# $ .. $ #
+# # ** # #
+# # .* # #
+#  $.*   #
+### ##$###
+  #   @#
+  ######
+Title: Maelstrom Collection #18
+Author: David Holland
+
+;maelst19.xsb
+  ####
+  #  #####
+ ##$ #   #### #####
+## $   $  $ ###   #
+# $   #*#   ## $  #
+#   ###+###    # ##
+## # ......# $ $ ##
+ # # *****.. # $  #
+##  #*.*.*## $ $  #
+#  $#..*..#### #  #
+#     ###  ###  ###
+### $   $$      #
+  #######  ######
+        #### ####
+Title: Maelstrom Collection #19
+Author: David Holland
+
+;maelst20.xsb
+          ####
+   ########  #
+ ###  # $ $$ #
+ # $ $$   #  ####
+ #    $ ##  ##  #
+ ###  #  #   $$ #
+   # #.. ##  #  #
+ ### #.+.. #   ##
+##.. $ $ #$. $  #
+# .. #### . ### #
+# ** .   .$. $  #
+#  ##############
+####
+Title: Maelstrom Collection #20
+Author: David Holland

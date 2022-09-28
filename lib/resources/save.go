@@ -108,7 +108,7 @@ func SaveLevel(world w.World) {
 	// Update save config
 	saveConfig.CurrentLevel = gameResources.Level.CurrentNum + 1
 	saveConfig.Package = gameResources.Package.Name
-	saveConfig.LevelMovements[fmt.Sprintf("Level%d", gameResources.Level.CurrentNum+1)] = movements.String()
+	saveConfig.LevelMovements[fmt.Sprintf("Level%04d", gameResources.Level.CurrentNum+1)] = movements.String()
 
 	// Write to save file
 	var encoded strings.Builder
@@ -137,7 +137,7 @@ func LoadSave(world w.World) {
 
 	// Decode movements
 	movements := []MovementType{}
-	for _, char := range []byte(saveConfig.LevelMovements[fmt.Sprintf("Level%d", gameResources.Level.CurrentNum+1)]) {
+	for _, char := range []byte(saveConfig.LevelMovements[fmt.Sprintf("Level%04d", gameResources.Level.CurrentNum+1)]) {
 		if movement, ok := movementCharMap[char]; ok {
 			movements = append(movements, movement)
 		} else {
