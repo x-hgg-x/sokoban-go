@@ -100,6 +100,7 @@ type Game struct {
 	Package    PackageData
 	Level      Level
 	GridLayout GridLayout
+	SaveConfig SaveConfig
 }
 
 // InitLevel inits level

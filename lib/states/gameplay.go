@@ -22,27 +22,29 @@ type GameplayState struct{}
 
 // OnStart method
 func (st *GameplayState) OnStart(world w.World) {
-	// Define package name
-	packageName := "XSokoban"
-
 	// Load game
+	packageName := "XSokoban"
 	packageData := utils.Try(gloader.LoadPackage(packageName))
-	world.Resources.Game = &resources.Game{Package: packageData}
+
+	// Load save configuration
+	var saveConfig resources.SaveConfig
+
+	utils.LogError(os.MkdirAll("config/saves", os.ModePerm))
+	if saveFile, err := os.ReadFile(fmt.Sprintf("config/saves/%s.toml", packageName)); err == nil {
+		var encodedSaveConfig resources.EncodedSaveConfig
+		utils.Try(toml.Decode(string(saveFile), &encodedSaveConfig))
+		saveConfig = utils.Try(encodedSaveConfig.Decode())
+	} else {
+		saveConfig = resources.EmptySaveConfig()
+	}
 
 	// Load last played level
 	levelNum := 0
-	utils.LogError(os.MkdirAll(fmt.Sprintf("config/%s", packageName), os.ModePerm))
-	if saveFile, err := os.ReadFile(fmt.Sprintf("config/%s/save.toml", packageName)); err == nil {
-		var encodedSaveConfig resources.EncodedSaveConfig
-		utils.Try(toml.Decode(string(saveFile), &encodedSaveConfig))
-		saveConfig := utils.Try(encodedSaveConfig.Decode())
-
-		currentLevel := int(saveConfig.CurrentLevel) - 1
-		if 0 <= currentLevel && currentLevel < len(packageData.Levels) {
-			levelNum = currentLevel
-		}
+	if 1 <= saveConfig.CurrentLevel && saveConfig.CurrentLevel <= len(packageData.Levels) {
+		levelNum = saveConfig.CurrentLevel - 1
 	}
 
+	world.Resources.Game = &resources.Game{Package: packageData, SaveConfig: saveConfig}
 	resources.InitLevel(world, levelNum)
 }
 
