@@ -1,2 +1,5 @@
 [font.joystix]
 font = "assets/lfs/fonts/joystix.ttf"
+
+[font.hack]
+font = "assets/lfs/fonts/hack.ttf"

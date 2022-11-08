@@ -1,12 +1,12 @@
 [[entity]]
 
 [entity.components.Text]
-id = "box"
-text = "BOX: 0/1"
-font_face = { font = "joystix", options.size = 25.0 }
+id = "package"
+text = "Package: XSokoban"
+font_face = { font = "hack", options.size = 25.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 0, y = -50 }
+translation = { x = 0, y = -10 }
 origin = "TopMiddle"
 pivot = "TopMiddle"

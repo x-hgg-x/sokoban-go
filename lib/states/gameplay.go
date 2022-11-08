@@ -22,8 +22,15 @@ type GameplayState struct{}
 
 // OnStart method
 func (st *GameplayState) OnStart(world w.World) {
+	// Load last used package
+	lastPackage := struct{ PackageName string }{"XSokoban"}
+	toml.DecodeFile("config/package.toml", &lastPackage)
+	if _, err := os.Stat(fmt.Sprintf("levels/%s.xsb", lastPackage.PackageName)); err != nil {
+		lastPackage.PackageName = "XSokoban"
+	}
+
 	// Load game
-	packageName := "XSokoban"
+	packageName := lastPackage.PackageName
 	packageData := utils.Try(gloader.LoadPackage(packageName))
 
 	// Load save configuration
@@ -72,7 +79,7 @@ func (st *GameplayState) Update(world w.World) states.Transition {
 	g.GridTransformSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransQuit}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)

@@ -4,14 +4,17 @@ import "github.com/x-hgg-x/goecsengine/loader"
 
 // MenuPrefabs contains menu prefabs
 type MenuPrefabs struct {
+	MainMenu          loader.EntityComponentList
+	ChoosePackageMenu loader.EntityComponentList
 	LevelCompleteMenu loader.EntityComponentList
 }
 
 // GamePrefabs contains game prefabs
 type GamePrefabs struct {
-	LevelInfo loader.EntityComponentList
-	BoxInfo   loader.EntityComponentList
-	StepInfo  loader.EntityComponentList
+	LevelInfo   loader.EntityComponentList
+	BoxInfo     loader.EntityComponentList
+	StepInfo    loader.EntityComponentList
+	PackageInfo loader.EntityComponentList
 }
 
 // Prefabs contains game prefabs

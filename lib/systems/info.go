@@ -42,6 +42,8 @@ func InfoSystem(world w.World) {
 			text.Text = fmt.Sprintf("BOX: %d/%d", boxOnGoalCount, boxCount)
 		case "step":
 			text.Text = fmt.Sprintf("STEPS: %d", len(gameResources.Level.Movements))
+		case "package":
+			text.Text = fmt.Sprintf("Package: %s", gameResources.Package.Name)
 		}
 	}))
 

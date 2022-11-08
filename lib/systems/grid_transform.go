@@ -10,7 +10,7 @@ import (
 
 const (
 	transformOffsetX = 0
-	transformOffsetY = -40
+	transformOffsetY = -80
 )
 
 // GridTransformSystem sets transform for grid elements

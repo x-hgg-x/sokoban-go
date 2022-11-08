@@ -111,6 +111,7 @@ func InitLevel(world w.World, levelNum int) {
 	prefabs := world.Resources.Prefabs.(*Prefabs)
 	loader.AddEntities(world, prefabs.Game.BoxInfo)
 	loader.AddEntities(world, prefabs.Game.StepInfo)
+	loader.AddEntities(world, prefabs.Game.PackageInfo)
 	levelInfoEntity := loader.AddEntities(world, prefabs.Game.LevelInfo)[0]
 
 	// Load level

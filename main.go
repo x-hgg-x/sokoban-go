@@ -21,10 +21,10 @@ import (
 
 const (
 	minGameWidth  = 960
-	minGameHeight = 680
+	minGameHeight = 720
 
 	offsetX       = 0
-	offsetY       = 40
+	offsetY       = 80
 	gridBlockSize = 32
 )
 
@@ -34,18 +34,22 @@ type mainGame struct {
 }
 
 func (game *mainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
+	gameWidth, gameHeight := minGameWidth, minGameHeight
+
 	resources := game.world.Resources
-	gridLayout := &resources.Game.(*gr.Game).GridLayout
 
-	gameWidth := gridLayout.Width*gridBlockSize + offsetX
-	gameHeight := gridLayout.Height*gridBlockSize + offsetY
-
-	resources.ScreenDimensions.Width = gameWidth
-	resources.ScreenDimensions.Height = gameHeight
+	if resources.Game != nil {
+		gridLayout := &resources.Game.(*gr.Game).GridLayout
+		gameWidth = gridLayout.Width*gridBlockSize + offsetX
+		gameHeight = gridLayout.Height*gridBlockSize + offsetY
+	}
 
 	fadeOutSprite := &(*resources.SpriteSheets)["fadeOut"].Sprites[0]
 	fadeOutSprite.Width = gameWidth
 	fadeOutSprite.Height = gameHeight
+
+	resources.ScreenDimensions.Width = gameWidth
+	resources.ScreenDimensions.Height = gameHeight
 
 	return gameWidth, gameHeight
 }
@@ -93,12 +97,15 @@ func main() {
 	// Load prefabs
 	world.Resources.Prefabs = &gr.Prefabs{
 		Menu: gr.MenuPrefabs{
+			MainMenu:          gloader.PreloadEntities("assets/metadata/entities/ui/main_menu.toml", world),
+			ChoosePackageMenu: gloader.PreloadEntities("assets/metadata/entities/ui/choose_package_menu.toml", world),
 			LevelCompleteMenu: gloader.PreloadEntities("assets/metadata/entities/ui/level_complete_menu.toml", world),
 		},
 		Game: gr.GamePrefabs{
-			LevelInfo: gloader.PreloadEntities("assets/metadata/entities/ui/level.toml", world),
-			BoxInfo:   gloader.PreloadEntities("assets/metadata/entities/ui/box.toml", world),
-			StepInfo:  gloader.PreloadEntities("assets/metadata/entities/ui/step.toml", world),
+			LevelInfo:   gloader.PreloadEntities("assets/metadata/entities/ui/level.toml", world),
+			BoxInfo:     gloader.PreloadEntities("assets/metadata/entities/ui/box.toml", world),
+			StepInfo:    gloader.PreloadEntities("assets/metadata/entities/ui/step.toml", world),
+			PackageInfo: gloader.PreloadEntities("assets/metadata/entities/ui/package.toml", world),
 		},
 	}
 
@@ -106,5 +113,5 @@ func main() {
 	ebiten.SetWindowSize(minGameWidth, minGameHeight)
 	ebiten.SetWindowTitle("Sokoban")
 
-	utils.LogError(ebiten.RunGame(&mainGame{world, es.Init(&gs.GameplayState{}, world)}))
+	utils.LogError(ebiten.RunGame(&mainGame{world, es.Init(&gs.MainMenuState{}, world)}))
 }

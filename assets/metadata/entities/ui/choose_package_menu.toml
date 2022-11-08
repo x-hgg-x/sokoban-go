@@ -1,0 +1,139 @@
+
+[[entity]]
+
+[entity.components.Text]
+id = "package1"
+text = ""
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -75 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "package2"
+text = ""
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -150 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "package3"
+text = ""
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -225 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "package4"
+text = ""
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -300 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "package5"
+text = ""
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -375 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "package6"
+text = ""
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -450 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "package7"
+text = ""
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -525 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "package8"
+text = ""
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -600 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "arrow_up"
+text = "\u25b2"
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -10 }
+origin = "TopMiddle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "arrow_down"
+text = "\u25bc"
+font_face = { font = "hack", options.size = 50.0 }
+color = [255, 255, 255, 0]
+
+[entity.components.UITransform]
+translation = { x = 0, y = 10 }
+origin = "BottomMiddle"
+pivot = "BottomMiddle"
