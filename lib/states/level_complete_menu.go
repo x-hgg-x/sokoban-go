@@ -1,9 +1,12 @@
 package states
 
 import (
+	gc "github.com/x-hgg-x/sokoban-go/lib/components"
 	"github.com/x-hgg-x/sokoban-go/lib/resources"
 	g "github.com/x-hgg-x/sokoban-go/lib/systems"
 
+	ecs "github.com/x-hgg-x/goecs/v2"
+	ec "github.com/x-hgg-x/goecsengine/components"
 	"github.com/x-hgg-x/goecsengine/loader"
 	"github.com/x-hgg-x/goecsengine/states"
 	w "github.com/x-hgg-x/goecsengine/world"
@@ -23,6 +26,13 @@ func (st *LevelCompleteState) OnStart(world w.World) {
 
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
 	loader.AddEntities(world, prefabs.Menu.LevelCompleteMenu)
+
+	gameComponents := world.Components.Game.(*gc.Components)
+	world.Manager.Join(gameComponents.Background, world.Components.Engine.SpriteRender).Visit(ecs.Visit(func(entity ecs.Entity) {
+		backgroundColorM := &world.Components.Engine.SpriteRender.Get(entity).(*ec.SpriteRender).Options.ColorM
+		backgroundColorM.Reset()
+		backgroundColorM.Scale(1, 1, 1, 0.5)
+	}))
 }
 
 // OnPause method

@@ -44,7 +44,7 @@ func (game *mainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
 		gameHeight = gridLayout.Height*gridBlockSize + offsetY
 	}
 
-	fadeOutSprite := &(*resources.SpriteSheets)["fadeOut"].Sprites[0]
+	fadeOutSprite := &(*resources.SpriteSheets)["background"].Sprites[0]
 	fadeOutSprite.Width = gameWidth
 	fadeOutSprite.Height = gameHeight
 
@@ -85,8 +85,8 @@ func main() {
 	spriteSheets := loader.LoadSpriteSheets("assets/metadata/spritesheets/spritesheets.toml")
 
 	textureImage := ebiten.NewImage(minGameWidth, minGameHeight)
-	textureImage.Fill(color.RGBA{A: 120})
-	spriteSheets["fadeOut"] = ec.SpriteSheet{Texture: ec.Texture{Image: textureImage}, Sprites: []ec.Sprite{{Width: minGameWidth, Height: minGameHeight}}}
+	textureImage.Fill(color.RGBA{A: 255})
+	spriteSheets["background"] = ec.SpriteSheet{Texture: ec.Texture{Image: textureImage}, Sprites: []ec.Sprite{{Width: minGameWidth, Height: minGameHeight}}}
 
 	world.Resources.SpriteSheets = &spriteSheets
 

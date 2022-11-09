@@ -9,6 +9,7 @@ type Components struct {
 	Box         *ecs.NullComponent
 	Goal        *ecs.NullComponent
 	Wall        *ecs.NullComponent
+	Background  *ecs.NullComponent
 }
 
 // GridElement component
@@ -28,3 +29,6 @@ type Goal struct{}
 
 // Wall component
 type Wall struct{}
+
+// Background component
+type Background struct{}
