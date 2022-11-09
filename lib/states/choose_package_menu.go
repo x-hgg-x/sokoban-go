@@ -114,9 +114,9 @@ func (st *ChoosePackageState) Update(world w.World) states.Transition {
 	_, mouseWheelY := ebiten.Wheel()
 
 	switch {
-	case inpututil.IsKeyJustPressed(ebiten.KeyDown) || mouseWheelY == -1:
+	case inpututil.IsKeyJustPressed(ebiten.KeyDown) || mouseWheelY < 0:
 		st.currentSelection = math.Min(st.currentSelection+1, len(st.packageNames)-1)
-	case inpututil.IsKeyJustPressed(ebiten.KeyUp) || mouseWheelY == 1:
+	case inpututil.IsKeyJustPressed(ebiten.KeyUp) || mouseWheelY > 0:
 		st.currentSelection = math.Max(st.currentSelection-1, 0)
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace):
 		st.packageSelection = st.currentSelection
