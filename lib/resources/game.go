@@ -2,6 +2,7 @@ package resources
 
 import (
 	"fmt"
+	"strings"
 
 	gloader "github.com/x-hgg-x/sokoban-go/lib/loader"
 	"github.com/x-hgg-x/sokoban-go/lib/math"
@@ -56,11 +57,9 @@ func GetPushMovement(m MovementType) MovementType {
 	return m%4 + 4
 }
 
-// MovementChars contains the char representation of each movement type
-const MovementChars = "udlrUDLR"
+const movementChars = "udlrUDLR"
 
-// MovementCharMap contains the movement type associated to a char representation
-var MovementCharMap = map[byte]MovementType{
+var movementCharMap = map[byte]MovementType{
 	'u': MovementUp,
 	'd': MovementDown,
 	'l': MovementLeft,
@@ -69,6 +68,29 @@ var MovementCharMap = map[byte]MovementType{
 	'D': MovementDownPush,
 	'L': MovementLeftPush,
 	'R': MovementRightPush,
+}
+
+// EncodeMovements encodes movements
+func EncodeMovements(movements []MovementType) string {
+	var encodedMovements strings.Builder
+	for _, movement := range movements {
+		utils.LogError(encodedMovements.WriteByte(movementChars[movement]))
+	}
+	return encodedMovements.String()
+}
+
+// DecodeMovements decodes movements
+func DecodeMovements(encodedMovements string) []MovementType {
+	movements := []MovementType{}
+	for _, char := range []byte(encodedMovements) {
+		if movement, ok := movementCharMap[char]; ok {
+			movements = append(movements, movement)
+		} else {
+			fmt.Printf("unknown movement: '%c'\n", char)
+			break
+		}
+	}
+	return movements
 }
 
 // PackageData contains level package data

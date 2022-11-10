@@ -64,13 +64,7 @@ func (st *LevelCompleteState) OnStart(world w.World) {
 
 	currentHighscore, ok := st.highscores[fmt.Sprintf("Level%04d", gameResources.Level.CurrentNum+1)]
 	if !ok || len(gameResources.Level.Movements) < len(currentHighscore.Movements) {
-		// Encode movements
-		var movements strings.Builder
-		for _, movement := range gameResources.Level.Movements {
-			utils.LogError(movements.WriteByte(resources.MovementChars[movement]))
-		}
-
-		st.newHighscore = &resources.Highscore{Movements: movements.String()}
+		st.newHighscore = &resources.Highscore{Movements: resources.EncodeMovements(gameResources.Level.Movements)}
 		st.text1.Text = "NEW RECORD !"
 		st.text2.Text = "NAME: ______"
 		st.text2.Color = color.RGBA{R: 255, A: 255}

@@ -77,16 +77,10 @@ func SaveLevel(world w.World) {
 		return
 	}
 
-	// Encode movements
-	var movements strings.Builder
-	for _, movement := range gameResources.Level.Movements {
-		utils.LogError(movements.WriteByte(MovementChars[movement]))
-	}
-
 	// Update save config
 	saveConfig := &gameResources.SaveConfig
 	saveConfig.CurrentLevel = gameResources.Level.CurrentNum + 1
-	saveConfig.LevelMovements[fmt.Sprintf("Level%04d", gameResources.Level.CurrentNum+1)] = movements.String()
+	saveConfig.LevelMovements[fmt.Sprintf("Level%04d", gameResources.Level.CurrentNum+1)] = EncodeMovements(gameResources.Level.Movements)
 
 	// Write to save file
 	var encoded strings.Builder
@@ -103,17 +97,7 @@ func LoadSave(world w.World) {
 	gameResources := world.Resources.Game.(*Game)
 	saveConfig := &gameResources.SaveConfig
 
-	// Decode movements
-	movements := []MovementType{}
-	for _, char := range []byte(saveConfig.LevelMovements[fmt.Sprintf("Level%04d", gameResources.Level.CurrentNum+1)]) {
-		if movement, ok := MovementCharMap[char]; ok {
-			movements = append(movements, movement)
-		} else {
-			fmt.Printf("unknown movement when loading save: '%c'\n", char)
-			return
-		}
-	}
-
+	movements := DecodeMovements(saveConfig.LevelMovements[fmt.Sprintf("Level%04d", gameResources.Level.CurrentNum+1)])
 	Move(world, movements...)
 	gameResources.Level.Modified = false
 }
