@@ -23,10 +23,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type packageInfo struct {
-	PackageName string
-}
-
 // ChoosePackageState is the choose package state
 type ChoosePackageState struct {
 	packageNames     []string
@@ -70,7 +66,7 @@ func (st *ChoosePackageState) OnStart(world w.World) {
 	}
 
 	// Load last used package
-	packageInfo := packageInfo{PackageName: "XSokoban"}
+	packageInfo := struct{ PackageName string }{"XSokoban"}
 	toml.DecodeFile("config/package.toml", &packageInfo)
 
 	if selection, ok := packageMap[packageInfo.PackageName]; ok {
@@ -84,6 +80,7 @@ func (st *ChoosePackageState) OnStart(world w.World) {
 	// Find text components
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
+
 		if strings.HasPrefix(text.ID, "package") {
 			st.packageText = append(st.packageText, text)
 		} else if text.ID == "arrow_up" {
@@ -102,7 +99,7 @@ func (st *ChoosePackageState) OnStop(world w.World) {
 	var encoded strings.Builder
 	encoder := toml.NewEncoder(&encoded)
 	encoder.Indent = ""
-	utils.LogError(encoder.Encode(packageInfo{PackageName: st.packageNames[st.packageSelection]}))
+	utils.LogError(encoder.Encode(struct{ PackageName string }{st.packageNames[st.packageSelection]}))
 	utils.LogError(os.WriteFile("config/package.toml", []byte(encoded.String()), 0o666))
 
 	world.Manager.DeleteAllEntities()

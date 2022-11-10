@@ -21,5 +21,34 @@ font_face = { font = "joystix", options.size = 60.0 }
 color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
-translation = { x = 0, y = 0 }
+translation = { x = 0, y = 120 }
 origin = "Middle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "text1"
+text = ""
+font_face = { font = "joystix", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 0, y = 20 }
+origin = "Middle"
+pivot = "TopMiddle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "text2"
+text = ""
+font_face = { font = "joystix", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -80 }
+origin = "Middle"
+pivot = "TopMiddle"

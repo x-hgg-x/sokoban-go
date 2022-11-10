@@ -56,9 +56,11 @@ func GetPushMovement(m MovementType) MovementType {
 	return m%4 + 4
 }
 
-var movementChars = []byte("udlrUDLR")
+// MovementChars contains the char representation of each movement type
+const MovementChars = "udlrUDLR"
 
-var movementCharMap = map[byte]MovementType{
+// MovementCharMap contains the movement type associated to a char representation
+var MovementCharMap = map[byte]MovementType{
 	'u': MovementUp,
 	'd': MovementDown,
 	'l': MovementLeft,

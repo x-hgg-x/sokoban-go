@@ -80,7 +80,7 @@ func SaveLevel(world w.World) {
 	// Encode movements
 	var movements strings.Builder
 	for _, movement := range gameResources.Level.Movements {
-		utils.LogError(movements.WriteByte(movementChars[movement]))
+		utils.LogError(movements.WriteByte(MovementChars[movement]))
 	}
 
 	// Update save config
@@ -106,7 +106,7 @@ func LoadSave(world w.World) {
 	// Decode movements
 	movements := []MovementType{}
 	for _, char := range []byte(saveConfig.LevelMovements[fmt.Sprintf("Level%04d", gameResources.Level.CurrentNum+1)]) {
-		if movement, ok := movementCharMap[char]; ok {
+		if movement, ok := MovementCharMap[char]; ok {
 			movements = append(movements, movement)
 		} else {
 			fmt.Printf("unknown movement when loading save: '%c'\n", char)
