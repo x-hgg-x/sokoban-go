@@ -22,10 +22,6 @@ import (
 const (
 	minGameWidth  = 960
 	minGameHeight = 720
-
-	offsetX       = 0
-	offsetY       = 80
-	gridBlockSize = 32
 )
 
 type mainGame struct {
@@ -34,24 +30,13 @@ type mainGame struct {
 }
 
 func (game *mainGame) Layout(outsideWidth, outsideHeight int) (int, int) {
-	gameWidth, gameHeight := minGameWidth, minGameHeight
+	var gridLayout *gr.GridLayout
 
-	resources := game.world.Resources
-
-	if resources.Game != nil {
-		gridLayout := &resources.Game.(*gr.Game).GridLayout
-		gameWidth = gridLayout.Width*gridBlockSize + offsetX
-		gameHeight = gridLayout.Height*gridBlockSize + offsetY
+	if game.world.Resources.Game != nil {
+		gridLayout = &game.world.Resources.Game.(*gr.Game).GridLayout
 	}
 
-	fadeOutSprite := &(*resources.SpriteSheets)["background"].Sprites[0]
-	fadeOutSprite.Width = gameWidth
-	fadeOutSprite.Height = gameHeight
-
-	resources.ScreenDimensions.Width = gameWidth
-	resources.ScreenDimensions.Height = gameHeight
-
-	return gameWidth, gameHeight
+	return gr.UpdateGameLayout(game.world, gridLayout)
 }
 
 func (game *mainGame) Update() error {

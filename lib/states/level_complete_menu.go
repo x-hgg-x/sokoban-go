@@ -46,7 +46,11 @@ func (st *LevelCompleteState) OnStop(world w.World) {}
 
 // Update method
 func (st *LevelCompleteState) Update(world w.World) states.Transition {
-	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) || inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
+		return states.Transition{Type: states.TransReplace, NewStates: []states.State{&MainMenuState{}}}
+	}
+
+	if inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) {
 		world.Resources.InputHandler.Actions[resources.RestartAction] = true
 	}
 

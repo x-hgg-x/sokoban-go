@@ -14,6 +14,10 @@ import (
 )
 
 const (
+	offsetX       = 0
+	offsetY       = 80
+	gridBlockSize = 32
+
 	minGridWidth  = 30
 	minGridHeight = 20
 )
@@ -120,6 +124,8 @@ func InitLevel(world w.World, levelNum int) {
 	gridLayout.Width = math.Max(minGridWidth, level.NCols)
 	gridLayout.Height = math.Max(minGridHeight, level.NRows)
 
+	UpdateGameLayout(world, gridLayout)
+
 	gameSpriteSheet := (*world.Resources.SpriteSheets)["game"]
 	grid, levelComponentList := utils.Try2(gloader.LoadLevel(gameResources.Package, levelNum, gridLayout.Width, gridLayout.Height, &gameSpriteSheet))
 	loader.AddEntities(world, levelComponentList)
@@ -129,4 +135,26 @@ func InitLevel(world w.World, levelNum int) {
 	world.Components.Engine.Text.Get(levelInfoEntity).(*ec.Text).Text = fmt.Sprintf("LEVEL %d/%d", levelNum+1, len(gameResources.Package.Levels))
 
 	LoadSave(world)
+}
+
+// UpdateGameLayout updates game layout
+func UpdateGameLayout(world w.World, gridLayout *GridLayout) (int, int) {
+	gridWidth, gridHeight := minGridWidth, minGridHeight
+
+	if gridLayout != nil {
+		gridWidth = gridLayout.Width
+		gridHeight = gridLayout.Height
+	}
+
+	gameWidth := gridWidth*gridBlockSize + offsetX
+	gameHeight := gridHeight*gridBlockSize + offsetY
+
+	fadeOutSprite := &(*world.Resources.SpriteSheets)["background"].Sprites[0]
+	fadeOutSprite.Width = gameWidth
+	fadeOutSprite.Height = gameHeight
+
+	world.Resources.ScreenDimensions.Width = gameWidth
+	world.Resources.ScreenDimensions.Height = gameHeight
+
+	return gameWidth, gameHeight
 }
