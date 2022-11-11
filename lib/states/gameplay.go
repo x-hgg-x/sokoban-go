@@ -22,15 +22,8 @@ type GameplayState struct{}
 
 // OnStart method
 func (st *GameplayState) OnStart(world w.World) {
-	// Load last used package
-	lastPackage := struct{ PackageName string }{"XSokoban"}
-	toml.DecodeFile("config/package.toml", &lastPackage)
-	if _, err := os.Stat(fmt.Sprintf("levels/%s.xsb", lastPackage.PackageName)); err != nil {
-		lastPackage.PackageName = "XSokoban"
-	}
-
 	// Load game
-	packageName := lastPackage.PackageName
+	packageName := resources.GetLastPackageName()
 	packageData := utils.Try(gloader.LoadPackage(packageName))
 
 	// Load save configuration
@@ -74,7 +67,7 @@ func (st *GameplayState) Update(world w.World) states.Transition {
 	g.UndoSystem(world)
 	g.MoveSystem(world)
 	g.SaveSystem(world)
-	g.InfoSystem(world)
+	g.InfoSystem(world, false)
 	g.GridUpdateSystem(world)
 	g.GridTransformSystem(world)
 

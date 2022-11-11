@@ -41,4 +41,14 @@ const (
 
 	// SaveAction is the action for saving the level
 	SaveAction = "Save"
+
+	// NextStepSolutionAction is the action for playing the next solution step
+	NextStepSolutionAction = "NextStepSolution"
+	// NextStepSolutionFastAction is the action for playing the next solution step fast
+	NextStepSolutionFastAction = "NextStepSolutionFast"
+
+	// PreviousStepSolutionAction is the action for undoing to the previous solution step
+	PreviousStepSolutionAction = "PreviousStepSolution"
+	// PreviousStepSolutionFastAction is the action for undoing fast to the previous solution step
+	PreviousStepSolutionFastAction = "PreviousStepSolutionFast"
 )

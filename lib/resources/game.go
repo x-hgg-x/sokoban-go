@@ -2,6 +2,7 @@ package resources
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	gloader "github.com/x-hgg-x/sokoban-go/lib/loader"
@@ -12,6 +13,8 @@ import (
 	"github.com/x-hgg-x/goecsengine/loader"
 	"github.com/x-hgg-x/goecsengine/utils"
 	w "github.com/x-hgg-x/goecsengine/world"
+
+	"github.com/BurntSushi/toml"
 )
 
 const (
@@ -181,4 +184,14 @@ func UpdateGameLayout(world w.World, gridLayout *GridLayout) (int, int) {
 	world.Resources.ScreenDimensions.Height = gameHeight
 
 	return gameWidth, gameHeight
+}
+
+// GetLastPackageName gets the last package name
+func GetLastPackageName() string {
+	lastPackage := struct{ PackageName string }{"XSokoban"}
+	toml.DecodeFile("config/package.toml", &lastPackage)
+	if _, err := os.Stat(fmt.Sprintf("levels/%s.xsb", lastPackage.PackageName)); err != nil {
+		lastPackage.PackageName = "XSokoban"
+	}
+	return lastPackage.PackageName
 }

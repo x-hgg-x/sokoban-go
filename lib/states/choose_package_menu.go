@@ -65,16 +65,7 @@ func (st *ChoosePackageState) OnStart(world w.World) {
 		utils.LogFatalf("empty package list")
 	}
 
-	// Load last used package
-	packageInfo := struct{ PackageName string }{"XSokoban"}
-	toml.DecodeFile("config/package.toml", &packageInfo)
-
-	if selection, ok := packageMap[packageInfo.PackageName]; ok {
-		st.packageSelection = selection
-	} else {
-		st.packageSelection = packageMap["XSokoban"]
-	}
-
+	st.packageSelection = packageMap[resources.GetLastPackageName()]
 	st.currentSelection = st.packageSelection
 
 	// Find text components
@@ -115,7 +106,7 @@ func (st *ChoosePackageState) Update(world w.World) states.Transition {
 		st.currentSelection = math.Min(st.currentSelection+1, len(st.packageNames)-1)
 	case inpututil.IsKeyJustPressed(ebiten.KeyUp) || mouseWheelY > 0:
 		st.currentSelection = math.Max(st.currentSelection-1, 0)
-	case inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace):
+	case inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) || inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft):
 		st.packageSelection = st.currentSelection
 		return st.exitTransition
 	case inpututil.IsKeyJustPressed(ebiten.KeyEscape):
@@ -141,7 +132,7 @@ func (st *ChoosePackageState) Update(world w.World) states.Transition {
 		}
 	}
 
-	st.packageText[3].Text = fmt.Sprintf("\u25b6 %s", st.packageText[3].Text)
+	st.packageText[3].Text = fmt.Sprintf("\u25ba %s", st.packageText[3].Text)
 
 	switch st.currentSelection {
 	case 0:

@@ -11,7 +11,7 @@ import (
 )
 
 // InfoSystem sets game info
-func InfoSystem(world w.World) {
+func InfoSystem(world w.World, solutionMode bool) {
 	gameResources := world.Resources.Game.(*resources.Game)
 
 	// Check the number of box on goal
@@ -35,7 +35,7 @@ func InfoSystem(world w.World) {
 		switch text.ID {
 		case "level":
 			text.Text = fmt.Sprintf("LEVEL %d/%d", gameResources.Level.CurrentNum+1, len(gameResources.Package.Levels))
-			if gameResources.Level.Modified {
+			if !solutionMode && gameResources.Level.Modified {
 				text.Text += "(*)"
 			}
 		case "box":
@@ -44,6 +44,9 @@ func InfoSystem(world w.World) {
 			text.Text = fmt.Sprintf("STEPS: %d", len(gameResources.Level.Movements))
 		case "package":
 			text.Text = fmt.Sprintf("Package: %s", gameResources.Package.Name)
+			if solutionMode {
+				text.Text += " - Replaying solution..."
+			}
 		}
 	}))
 

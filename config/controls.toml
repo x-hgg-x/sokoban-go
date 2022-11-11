@@ -5,14 +5,12 @@ once = true
 [controls.actions.MoveUpFast]
 combinations = [[{ key = "ShiftLeft" }, { key = "Up" }], [{ key = "ShiftRight" }, { key = "Up" }]]
 
-
 [controls.actions.MoveDown]
 combinations = [[{ key = "Down" }]]
 once = true
 
 [controls.actions.MoveDownFast]
 combinations = [[{ key = "ShiftLeft" }, { key = "Down" }], [{ key = "ShiftRight" }, { key = "Down" }]]
-
 
 [controls.actions.MoveLeft]
 combinations = [[{ key = "Left" }]]
@@ -28,14 +26,12 @@ once = true
 [controls.actions.MoveRightFast]
 combinations = [[{ key = "ShiftLeft" }, { key = "Right" }], [{ key = "ShiftRight" }, { key = "Right" }]]
 
-
 [controls.actions.PreviousLevel]
 combinations = [[{ key = "Z" }]]
 once = true
 
 [controls.actions.PreviousLevelFast]
 combinations = [[{ key = "ShiftLeft" }, { key = "Z" }], [{ key = "ShiftRight" }, { key = "Z" }]]
-
 
 [controls.actions.NextLevel]
 combinations = [[{ key = "X" }]]
@@ -44,7 +40,6 @@ once = true
 [controls.actions.NextLevelFast]
 combinations = [[{ key = "ShiftLeft" }, { key = "X" }], [{ key = "ShiftRight" }, { key = "X" }]]
 
-
 [controls.actions.Undo]
 combinations = [[{ key = "U" }]]
 once = true
@@ -52,15 +47,27 @@ once = true
 [controls.actions.UndoFast]
 combinations = [[{ key = "ShiftLeft" }, { key = "U" }], [{ key = "ShiftRight" }, { key = "U" }]]
 
-
 [controls.actions.Restart]
 combinations = [[{ key = "R" }]]
 once = true
 
-
 [controls.actions.Save]
 combinations = [[{ key = "S" }]]
 once = true
+
+[controls.actions.NextStepSolution]
+combinations = [[{ key = "Right" }]]
+once = true
+
+[controls.actions.NextStepSolutionFast]
+combinations = [[{ key = "ShiftLeft" }, { key = "Right" }], [{ key = "ShiftRight" }, { key = "Right" }]]
+
+[controls.actions.PreviousStepSolution]
+combinations = [[{ key = "Left" }]]
+once = true
+
+[controls.actions.PreviousStepSolutionFast]
+combinations = [[{ key = "ShiftLeft" }, { key = "Left" }], [{ key = "ShiftRight" }, { key = "Left" }]]
 
 
 # Usage

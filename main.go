@@ -61,6 +61,7 @@ func main() {
 		gr.MoveUpFastAction, gr.MoveDownFastAction, gr.MoveLeftFastAction, gr.MoveRightFastAction,
 		gr.PreviousLevelAction, gr.PreviousLevelFastAction, gr.NextLevelAction, gr.NextLevelFastAction,
 		gr.UndoAction, gr.UndoFastAction, gr.RestartAction, gr.SaveAction,
+		gr.NextStepSolutionAction, gr.NextStepSolutionFastAction, gr.PreviousStepSolutionAction, gr.PreviousStepSolutionFastAction,
 	}
 	controls, inputHandler := loader.LoadControls("config/controls.toml", axes, actions)
 	world.Resources.Controls = &controls
@@ -85,6 +86,7 @@ func main() {
 			MainMenu:          gloader.PreloadEntities("assets/metadata/entities/ui/main_menu.toml", world),
 			ChoosePackageMenu: gloader.PreloadEntities("assets/metadata/entities/ui/choose_package_menu.toml", world),
 			LevelCompleteMenu: gloader.PreloadEntities("assets/metadata/entities/ui/level_complete_menu.toml", world),
+			HighscoresMenu:    gloader.PreloadEntities("assets/metadata/entities/ui/highscores_menu.toml", world),
 		},
 		Game: gr.GamePrefabs{
 			LevelInfo:   gloader.PreloadEntities("assets/metadata/entities/ui/level.toml", world),

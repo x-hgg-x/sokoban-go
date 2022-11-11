@@ -100,7 +100,7 @@ id = "start"
 id = "view_highscores"
 text = "VIEW HIGHSCORES"
 font_face = { font = "joystix", options.size = 60.0 }
-color = [255, 255, 255, 75]
+color = [255, 255, 255, 255]
 
 [entity.components.UITransform]
 translation = { x = 480, y = 400 }

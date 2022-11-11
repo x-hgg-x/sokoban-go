@@ -83,3 +83,59 @@ func Move(world w.World, movements ...MovementType) {
 		gameResources.Level.Modified = true
 	}
 }
+
+// Undo undoes the last move
+func Undo(world w.World) {
+	gameResources := world.Resources.Game.(*Game)
+	levelWidth := gameResources.Level.Grid.NCols
+
+	if len(gameResources.Level.Movements) == 0 {
+		return
+	}
+
+	playerIndex := -1
+	for iTile, tile := range gameResources.Level.Grid.Data {
+		if tile.Contains(TilePlayer) {
+			playerIndex = iTile
+			break
+		}
+	}
+
+	playerTile := &gameResources.Level.Grid.Data[playerIndex]
+	playerLine := playerIndex / levelWidth
+	playerCol := playerIndex % levelWidth
+
+	var boxPush bool
+	var directionLine, directionCol int
+	switch gameResources.Level.Movements[len(gameResources.Level.Movements)-1] {
+	case MovementUp:
+		boxPush, directionLine, directionCol = false, -1, 0
+	case MovementDown:
+		boxPush, directionLine, directionCol = false, 1, 0
+	case MovementLeft:
+		boxPush, directionLine, directionCol = false, 0, -1
+	case MovementRight:
+		boxPush, directionLine, directionCol = false, 0, 1
+	case MovementUpPush:
+		boxPush, directionLine, directionCol = true, -1, 0
+	case MovementDownPush:
+		boxPush, directionLine, directionCol = true, 1, 0
+	case MovementLeftPush:
+		boxPush, directionLine, directionCol = true, 0, -1
+	case MovementRightPush:
+		boxPush, directionLine, directionCol = true, 0, 1
+	}
+
+	if boxPush {
+		oneFrontTile := gameResources.Level.Grid.Get(playerLine+directionLine, playerCol+directionCol)
+		playerTile.Set(TileBox)
+		oneFrontTile.Remove(TileBox)
+	}
+
+	oneBackTile := gameResources.Level.Grid.Get(playerLine-directionLine, playerCol-directionCol)
+	oneBackTile.Set(TilePlayer)
+	playerTile.Remove(TilePlayer)
+
+	gameResources.Level.Movements = gameResources.Level.Movements[:len(gameResources.Level.Movements)-1]
+	gameResources.Level.Modified = true
+}

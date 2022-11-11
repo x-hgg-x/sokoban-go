@@ -7,6 +7,7 @@ type MenuPrefabs struct {
 	MainMenu          loader.EntityComponentList
 	ChoosePackageMenu loader.EntityComponentList
 	LevelCompleteMenu loader.EntityComponentList
+	HighscoresMenu    loader.EntityComponentList
 }
 
 // GamePrefabs contains game prefabs
