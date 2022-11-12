@@ -85,7 +85,7 @@ func (st *LevelCompleteState) Update(world w.World) states.Transition {
 	if st.newHighscore != nil {
 		// Set highscore author
 		// Get user input
-		st.newHighscore.Author += strings.ToUpper(resources.RegexpForbiddenChars.ReplaceAllLiteralString(string(ebiten.AppendInputChars(nil)), ""))
+		st.newHighscore.Author += strings.ToUpper(resources.RegexpHighscoreForbiddenChars.ReplaceAllLiteralString(string(ebiten.AppendInputChars(nil)), ""))
 		if len(st.newHighscore.Author) > resources.MaxAuthorLen {
 			st.newHighscore.Author = st.newHighscore.Author[:resources.MaxAuthorLen]
 		}

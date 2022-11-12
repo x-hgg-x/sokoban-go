@@ -55,6 +55,10 @@ once = true
 combinations = [[{ key = "S" }]]
 once = true
 
+[controls.actions.GoToLevel]
+combinations = [[{ key = "G" }]]
+once = true
+
 [controls.actions.NextStepSolution]
 combinations = [[{ key = "Right" }]]
 once = true

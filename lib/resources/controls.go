@@ -42,6 +42,9 @@ const (
 	// SaveAction is the action for saving the level
 	SaveAction = "Save"
 
+	// GoToLevelAction is the action for switching to a specific level
+	GoToLevelAction = "GoToLevel"
+
 	// NextStepSolutionAction is the action for playing the next solution step
 	NextStepSolutionAction = "NextStepSolution"
 	// NextStepSolutionFastAction is the action for playing the next solution step fast

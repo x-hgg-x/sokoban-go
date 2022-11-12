@@ -71,6 +71,10 @@ func (st *GameplayState) Update(world w.World) states.Transition {
 	g.GridUpdateSystem(world)
 	g.GridTransformSystem(world)
 
+	if world.Resources.InputHandler.Actions[resources.GoToLevelAction] {
+		return states.Transition{Type: states.TransPush, NewStates: []states.State{&GoToLevelState{}}}
+	}
+
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
 		return states.Transition{Type: states.TransPush, NewStates: []states.State{&PauseMenuState{}}}
 	}
