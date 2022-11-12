@@ -1,0 +1,244 @@
+[[entity]]
+
+[entity.components.SpriteRender]
+sprite_sheet_name = "fadeOut"
+sprite_number = 0
+
+[entity.components.Transform]
+translation = { x = 0.0, y = 0.0 }
+origin = "Middle"
+depth = 2.0
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_resume"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = -210, y = 215 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_retry"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = -180, y = 115 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_view_highscore"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = -410, y = 15 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_view_solution"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = -380, y = -85 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_choose_package"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = -410, y = -185 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "cursor_main_menu"
+text = "\u25ba"
+font_face = { font = "hack", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = -290, y = -285 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "resume"
+text = "RESUME"
+font_face = { font = "joystix", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 0, y = 215 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.SpriteRender]
+fill = { width = 320, height = 60 }
+
+[entity.components.Transform]
+translation = { x = 0, y = 215 }
+origin = "Middle"
+
+[entity.components.MouseReactive]
+id = "resume"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "retry"
+text = "RETRY"
+font_face = { font = "joystix", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 0, y = 115 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.SpriteRender]
+fill = { width = 270, height = 60 }
+
+[entity.components.Transform]
+translation = { x = 0, y = 115 }
+origin = "Middle"
+
+[entity.components.MouseReactive]
+id = "retry"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "view_highscore"
+text = "VIEW HIGHSCORE"
+font_face = { font = "joystix", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 0, y = 15 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.SpriteRender]
+fill = { width = 720, height = 60 }
+
+[entity.components.Transform]
+translation = { x = 0, y = 15 }
+origin = "Middle"
+
+[entity.components.MouseReactive]
+id = "view_highscore"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "view_solution"
+text = "VIEW SOLUTION"
+font_face = { font = "joystix", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -85 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.SpriteRender]
+fill = { width = 670, height = 60 }
+
+[entity.components.Transform]
+translation = { x = 0, y = -85 }
+origin = "Middle"
+
+[entity.components.MouseReactive]
+id = "view_solution"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "choose_package"
+text = "CHOOSE PACKAGE"
+font_face = { font = "joystix", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -185 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.SpriteRender]
+fill = { width = 720, height = 60 }
+
+[entity.components.Transform]
+translation = { x = 0, y = -185 }
+origin = "Middle"
+
+[entity.components.MouseReactive]
+id = "choose_package"
+
+
+[[entity]]
+
+[entity.components.Text]
+id = "main_menu"
+text = "MAIN MENU"
+font_face = { font = "joystix", options.size = 60.0 }
+color = [255, 255, 255, 255]
+
+[entity.components.UITransform]
+translation = { x = 0, y = -285 }
+origin = "Middle"
+
+
+[[entity]]
+
+[entity.components.SpriteRender]
+fill = { width = 480, height = 60 }
+
+[entity.components.Transform]
+translation = { x = 0, y = -285 }
+origin = "Middle"
+
+[entity.components.MouseReactive]
+id = "main_menu"

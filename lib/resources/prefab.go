@@ -6,6 +6,7 @@ import "github.com/x-hgg-x/goecsengine/loader"
 type MenuPrefabs struct {
 	MainMenu          loader.EntityComponentList
 	ChoosePackageMenu loader.EntityComponentList
+	PauseMenu         loader.EntityComponentList
 	LevelCompleteMenu loader.EntityComponentList
 	HighscoresMenu    loader.EntityComponentList
 	SolutionsMenu     loader.EntityComponentList

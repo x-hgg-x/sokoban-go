@@ -6,7 +6,6 @@ import (
 	"os"
 	"strings"
 
-	gc "github.com/x-hgg-x/sokoban-go/lib/components"
 	"github.com/x-hgg-x/sokoban-go/lib/resources"
 	g "github.com/x-hgg-x/sokoban-go/lib/systems"
 
@@ -36,14 +35,6 @@ func (st *LevelCompleteState) OnStart(world w.World) {
 
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
 	loader.AddEntities(world, prefabs.Menu.LevelCompleteMenu)
-
-	// Modify background opacity
-	gameComponents := world.Components.Game.(*gc.Components)
-	world.Manager.Join(gameComponents.Background, world.Components.Engine.SpriteRender).Visit(ecs.Visit(func(entity ecs.Entity) {
-		backgroundColorM := &world.Components.Engine.SpriteRender.Get(entity).(*ec.SpriteRender).Options.ColorM
-		backgroundColorM.Reset()
-		backgroundColorM.Scale(1, 1, 1, 0.5)
-	}))
 
 	// Find text components
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {

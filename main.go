@@ -71,8 +71,8 @@ func main() {
 	spriteSheets := loader.LoadSpriteSheets("assets/metadata/spritesheets/spritesheets.toml")
 
 	textureImage := ebiten.NewImage(minGameWidth, minGameHeight)
-	textureImage.Fill(color.RGBA{A: 255})
-	spriteSheets["background"] = ec.SpriteSheet{Texture: ec.Texture{Image: textureImage}, Sprites: []ec.Sprite{{Width: minGameWidth, Height: minGameHeight}}}
+	textureImage.Fill(color.RGBA{A: 120})
+	spriteSheets["fadeOut"] = ec.SpriteSheet{Texture: ec.Texture{Image: textureImage}, Sprites: []ec.Sprite{{Width: minGameWidth, Height: minGameHeight}}}
 
 	world.Resources.SpriteSheets = &spriteSheets
 
@@ -85,6 +85,7 @@ func main() {
 		Menu: gr.MenuPrefabs{
 			MainMenu:          gloader.PreloadEntities("assets/metadata/entities/ui/main_menu.toml", world),
 			ChoosePackageMenu: gloader.PreloadEntities("assets/metadata/entities/ui/choose_package_menu.toml", world),
+			PauseMenu:         gloader.PreloadEntities("assets/metadata/entities/ui/pause_menu.toml", world),
 			LevelCompleteMenu: gloader.PreloadEntities("assets/metadata/entities/ui/level_complete_menu.toml", world),
 			HighscoresMenu:    gloader.PreloadEntities("assets/metadata/entities/ui/highscores_menu.toml", world),
 			SolutionsMenu:     gloader.PreloadEntities("assets/metadata/entities/ui/solutions_menu.toml", world),

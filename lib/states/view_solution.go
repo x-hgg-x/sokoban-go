@@ -49,7 +49,6 @@ func (st *ViewSolutionState) OnStart(world w.World) {
 		resources.NormalizeHighScores(highscores)
 		st.data = highscores
 		st.movements = resources.DecodeMovements(highscores[fmt.Sprintf("Level%04d", st.levelNum)].Movements)
-
 	} else {
 		solutions := map[string]string{}
 		toml.DecodeFile(fmt.Sprintf("levels/solutions/%s.toml", st.packageName), &solutions)
@@ -71,25 +70,26 @@ func (st *ViewSolutionState) OnResume(world w.World) {}
 // OnStop method
 func (st *ViewSolutionState) OnStop(world w.World) {
 	// Save normalized solution
+	key := fmt.Sprintf("Level%04d", st.levelNum)
+
 	var filename string
 
 	switch data := st.data.(type) {
 	case resources.HighscoreTable:
 		filename = fmt.Sprintf("config/highscores/%s.toml", st.packageName)
 		if !st.invalidLevel {
-			key := fmt.Sprintf("Level%04d", st.levelNum)
 			highscore := data[key]
 			highscore.Movements = resources.EncodeMovements(st.movements)
 			data[key] = highscore
 		} else {
-			delete(data, fmt.Sprintf("Level%04d", st.levelNum))
+			delete(data, key)
 		}
 	case map[string]string:
 		filename = fmt.Sprintf("levels/solutions/%s.toml", st.packageName)
 		if !st.invalidLevel {
-			data[fmt.Sprintf("Level%04d", st.levelNum)] = resources.EncodeMovements(st.movements)
+			data[key] = resources.EncodeMovements(st.movements)
 		} else {
-			delete(data, fmt.Sprintf("Level%04d", st.levelNum))
+			delete(data, key)
 		}
 	}
 

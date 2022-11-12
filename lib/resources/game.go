@@ -176,7 +176,7 @@ func UpdateGameLayout(world w.World, gridLayout *GridLayout) (int, int) {
 	gameWidth := gridWidth*gridBlockSize + offsetX
 	gameHeight := gridHeight*gridBlockSize + offsetY
 
-	fadeOutSprite := &(*world.Resources.SpriteSheets)["background"].Sprites[0]
+	fadeOutSprite := &(*world.Resources.SpriteSheets)["fadeOut"].Sprites[0]
 	fadeOutSprite.Width = gameWidth
 	fadeOutSprite.Height = gameHeight
 

@@ -30,7 +30,7 @@ func (st *MainMenuState) setSelection(selection int) {
 	st.selection = selection
 }
 
-func (st *MainMenuState) confirmSelection() states.Transition {
+func (st *MainMenuState) confirmSelection(world w.World) states.Transition {
 	switch st.selection {
 	case 0:
 		// Start

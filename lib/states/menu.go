@@ -16,7 +16,7 @@ import (
 type menu interface {
 	getSelection() int
 	setSelection(selection int)
-	confirmSelection() states.Transition
+	confirmSelection(world w.World) states.Transition
 	getMenuIDs() []string
 	getCursorMenuIDs() []string
 }
@@ -35,7 +35,7 @@ func updateMenu(menu menu, world w.World) states.Transition {
 	case inpututil.IsKeyJustPressed(ebiten.KeyUp):
 		menu.setSelection(math.Mod(selection-1, numItems))
 	case inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace):
-		return menu.confirmSelection()
+		return menu.confirmSelection(world)
 	}
 
 	// Handle mouse events only if mouse is moved or clicked
@@ -50,7 +50,7 @@ func updateMenu(menu menu, world w.World) states.Transition {
 					if mouseReactive.ID == id && mouseReactive.Hovered {
 						menu.setSelection(iElem)
 						if mouseReactive.JustClicked {
-							transition = menu.confirmSelection()
+							transition = menu.confirmSelection(world)
 							return true
 						}
 					}

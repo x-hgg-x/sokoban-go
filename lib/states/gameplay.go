@@ -72,7 +72,7 @@ func (st *GameplayState) Update(world w.World) states.Transition {
 	g.GridTransformSystem(world)
 
 	if inpututil.IsKeyJustPressed(ebiten.KeyEscape) {
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&MainMenuState{}}}
+		return states.Transition{Type: states.TransPush, NewStates: []states.State{&PauseMenuState{}}}
 	}
 
 	gameResources := world.Resources.Game.(*resources.Game)
