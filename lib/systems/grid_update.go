@@ -8,6 +8,7 @@ import (
 	w "github.com/x-hgg-x/goecsengine/world"
 )
 
+// GridUpdateSystem updates grid elements
 func GridUpdateSystem(world w.World) {
 	gameComponents := world.Components.Game.(*gc.Components)
 	gameResources := world.Resources.Game.(*resources.Game)

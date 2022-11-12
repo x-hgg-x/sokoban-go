@@ -37,10 +37,10 @@ func (st *MainMenuState) confirmSelection() states.Transition {
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&GameplayState{}}}
 	case 1:
 		// View highscores
-		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HighscoresState{}}}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HighscoresSolutionsState{hasAuthor: true}}}
 	case 2:
 		// View solutions
-		return states.Transition{Type: states.TransNone}
+		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HighscoresSolutionsState{hasAuthor: false}}}
 	case 3:
 		// Choose package
 		return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&ChoosePackageState{

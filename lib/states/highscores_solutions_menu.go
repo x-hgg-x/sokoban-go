@@ -27,8 +27,9 @@ type highscore struct {
 	movements string
 }
 
-// HighscoresState is the highscores state
-type HighscoresState struct {
+// HighscoresSolutionsState is the highscores and solutions state
+type HighscoresSolutionsState struct {
+	hasAuthor        bool
 	highscores       []highscore
 	currentSelection int
 	scoreText        []*ec.Text
@@ -41,32 +42,51 @@ type HighscoresState struct {
 //
 
 // OnPause method
-func (st *HighscoresState) OnPause(world w.World) {}
+func (st *HighscoresSolutionsState) OnPause(world w.World) {}
 
 // OnResume method
-func (st *HighscoresState) OnResume(world w.World) {}
+func (st *HighscoresSolutionsState) OnResume(world w.World) {}
 
 // OnStart method
-func (st *HighscoresState) OnStart(world w.World) {
+func (st *HighscoresSolutionsState) OnStart(world w.World) {
 	packageName := resources.GetLastPackageName()
-
 	prefabs := world.Resources.Prefabs.(*resources.Prefabs)
-	loader.AddEntities(world, prefabs.Menu.HighscoresMenu)
+
+	var scoreIDPrefix string
+
+	if st.hasAuthor {
+		scoreIDPrefix = "score"
+		loader.AddEntities(world, prefabs.Menu.HighscoresMenu)
+
+		// Load highscores
+		highscores := resources.HighscoreTable{}
+		toml.DecodeFile(fmt.Sprintf("config/highscores/%s.toml", packageName), &highscores)
+		resources.NormalizeHighScores(highscores)
+
+		for k, v := range highscores {
+			levelNum, err := strconv.Atoi(k[5:])
+			if err == nil {
+				st.highscores = append(st.highscores, highscore{levelNum: levelNum, author: v.Author, movements: v.Movements})
+			}
+		}
+	} else {
+		scoreIDPrefix = "steps"
+		loader.AddEntities(world, prefabs.Menu.SolutionsMenu)
+
+		// Load solutions
+		solutions := map[string]string{}
+		toml.DecodeFile(fmt.Sprintf("levels/solutions/%s.toml", packageName), &solutions)
+
+		for k, v := range solutions {
+			levelNum, err := strconv.Atoi(k[5:])
+			if err == nil {
+				st.highscores = append(st.highscores, highscore{levelNum: levelNum, movements: v})
+			}
+		}
+	}
 
 	packageInfoEntity := loader.AddEntities(world, prefabs.Game.PackageInfo)[0]
 	world.Components.Engine.Text.Get(packageInfoEntity).(*ec.Text).Text = fmt.Sprintf("Package: %s", packageName)
-
-	// Load highscores
-	highscores := resources.HighscoreTable{}
-	toml.DecodeFile(fmt.Sprintf("config/highscores/%s.toml", packageName), &highscores)
-	resources.NormalizeHighScores(highscores)
-
-	for k, v := range highscores {
-		levelNum, err := strconv.Atoi(k[5:])
-		if err == nil {
-			st.highscores = append(st.highscores, highscore{levelNum: levelNum, author: v.Author, movements: v.Movements})
-		}
-	}
 
 	sort.Slice(st.highscores, func(i, j int) bool { return st.highscores[i].levelNum < st.highscores[j].levelNum })
 
@@ -74,7 +94,7 @@ func (st *HighscoresState) OnStart(world w.World) {
 	world.Manager.Join(world.Components.Engine.Text, world.Components.Engine.UITransform).Visit(ecs.Visit(func(entity ecs.Entity) {
 		text := world.Components.Engine.Text.Get(entity).(*ec.Text)
 
-		if strings.HasPrefix(text.ID, "score") {
+		if strings.HasPrefix(text.ID, scoreIDPrefix) {
 			st.scoreText = append(st.scoreText, text)
 		} else if text.ID == "cursor" {
 			if len(st.highscores) > 0 {
@@ -91,12 +111,12 @@ func (st *HighscoresState) OnStart(world w.World) {
 }
 
 // OnStop method
-func (st *HighscoresState) OnStop(world w.World) {
+func (st *HighscoresSolutionsState) OnStop(world w.World) {
 	world.Manager.DeleteAllEntities()
 }
 
 // Update method
-func (st *HighscoresState) Update(world w.World) states.Transition {
+func (st *HighscoresSolutionsState) Update(world w.World) states.Transition {
 	if len(st.highscores) > 0 {
 		// Process inputs
 		_, mouseWheelY := ebiten.Wheel()
@@ -108,12 +128,8 @@ func (st *HighscoresState) Update(world w.World) states.Transition {
 			st.currentSelection = math.Max(st.currentSelection-1, 0)
 		case inpututil.IsKeyJustPressed(ebiten.KeyEnter) || inpututil.IsKeyJustPressed(ebiten.KeySpace) || inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft):
 			currentScore := st.highscores[st.currentSelection]
-
-			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&ViewSolutionState{
-				levelNum:       currentScore.levelNum,
-				movements:      resources.DecodeMovements(currentScore.movements),
-				exitTransition: states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HighscoresState{currentSelection: st.currentSelection}}},
-			}}}
+			exitTransition := states.Transition{Type: states.TransSwitch, NewStates: []states.State{&HighscoresSolutionsState{hasAuthor: st.hasAuthor}}}
+			return states.Transition{Type: states.TransSwitch, NewStates: []states.State{&ViewSolutionState{levelNum: currentScore.levelNum, hasAuthor: st.hasAuthor, exitTransition: exitTransition}}}
 		}
 
 		// Set text entities
@@ -129,7 +145,12 @@ func (st *HighscoresState) Update(world w.World) states.Transition {
 
 			if 0 <= scoreIndex && scoreIndex < len(st.highscores) {
 				score := st.highscores[scoreIndex]
-				textSelection.Text = fmt.Sprintf("%4d  %6s  %5d", score.levelNum, score.author, len(score.movements))
+
+				if st.hasAuthor {
+					textSelection.Text = fmt.Sprintf("%4d  %6s  %5d", score.levelNum, score.author, len(score.movements))
+				} else {
+					textSelection.Text = fmt.Sprintf("%4d     %5d", score.levelNum, len(score.movements))
+				}
 
 				textSelection.Color.A = 255
 			} else {

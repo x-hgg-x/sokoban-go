@@ -87,6 +87,7 @@ func main() {
 			ChoosePackageMenu: gloader.PreloadEntities("assets/metadata/entities/ui/choose_package_menu.toml", world),
 			LevelCompleteMenu: gloader.PreloadEntities("assets/metadata/entities/ui/level_complete_menu.toml", world),
 			HighscoresMenu:    gloader.PreloadEntities("assets/metadata/entities/ui/highscores_menu.toml", world),
+			SolutionsMenu:     gloader.PreloadEntities("assets/metadata/entities/ui/solutions_menu.toml", world),
 		},
 		Game: gr.GamePrefabs{
 			LevelInfo:   gloader.PreloadEntities("assets/metadata/entities/ui/level.toml", world),
